@@ -1,0 +1,12 @@
+openapi: 3.0.3
+
+info:
+  title: IAMS API
+  description: IAMS API documented with Swagger
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:5000/api
+
+paths:
+  $ref: './paths/auth.yaml'
