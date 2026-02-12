@@ -1,42 +1,21 @@
-import compression from 'compression';
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
+// import cors from 'cors';
 import express, { Application } from 'express';
 import helmet from 'helmet';
-import morgan from 'morgan';
-import swaggerUi from 'swagger-ui-express';
-import { compressConfig, corsConfig, envConfig, jsonConfig } from './config';
-import { loadSwagger } from './docs/swagger';
-import { ENVIROMENTS } from './enums';
-import errorHandler from './middlewares/errorHandler';
-import { multerErrorHandler } from './middlewares/upload';
-import { routesConfig } from './routes';
+// import { corsConfig } from '~/config/cors.config';
 
 const app: Application = express();
 
 (async () => {
-  // Middlewares
+  // <------------------------------------ Middlewares ------------------------------------>
+  // Thêm các HTTP security headers để giảm rủi ro tấn công web.
   app.use(helmet());
-  app.use(cors(corsConfig));
-  app.use(express.json(jsonConfig));
-  app.use(cookieParser());
-  app.use(morgan('dev'));
-  app.use(compression(compressConfig));
 
-  // Swagger
-  const swaggerDocument = await loadSwagger();
-  if (envConfig.ENV === ENVIROMENTS.DEVELOPMENT) {
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-  }
+  // Set CORS response headers.
+  // app.use(cors(corsConfig));
 
-  // Routes
-  routesConfig.forEach(({ path, router }) => {
-    app.use(`/api/${path}`, router);
+  app.get('/', (req, res) => {
+    res.send('Hello World!');
   });
-
-  // Error middlewares
-  app.use(multerErrorHandler);
-  app.use(errorHandler);
 })();
 
 export default app;

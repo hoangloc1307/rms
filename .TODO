@@ -1,0 +1,22 @@
+Cài đặt môi trường lập trình.
+- Cấu hình file tsconfig.json để làm việc với typescript. ✅
+- Cấu hình nodemon để restart server khi có thay đổi code. ✅
+- Load file env dựa vào môi trường (development, production) và kiểm tra các biến môi trường ✅.
+- Cấu hình prettier để format code.
+- Cấu hình eslint để kiểm tra code.
+- Cấu hình husky để kiểm tra code trước khi commit.
+- Cấu hình commitizen để kiểm tra code trước khi commit.
+- Cấu hình semantic versioning.
+- Cấu hình github action để tự động build và deploy khi push code.
+- Cấu hình docker để build image và deploy container.
+- Cấu hình prisma để quản lý database.
+- Cấu hình swagger để kiểm tra api.
+- Cấu hình jest để kiểm tra code.
+
+Cài đặt bảo mật
+- Cấu hình helmet để bảo vệ các headers của server.
+- Cấu hình cors để bảo vệ các request của client.
+- Cấu hình morgan để log request và response.
+- Cấu hình cookie-parser để parse cookie.
+- Cấu hình express-validator để validate request.
+- Cấu hình compression để giảm kích thước response.

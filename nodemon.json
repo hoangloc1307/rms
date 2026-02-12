@@ -1,11 +1,11 @@
 {
   "watch": ["src"],
   "ext": "ts,json",
-  "exec": "node --inspect -r ts-node/register src/server.ts",
+  "exec": "tsx src/server.ts",
   "ignore": ["dist", "node_modules"],
   "restartable": "rs",
   "exitcrash": false,
-  "env": {
-    "NODE_ENV": "development"
-  }
+  "delay": "300",
+  "signal": "SIGTERM",
+  "env": { "NODE_ENV": "development" }
 }

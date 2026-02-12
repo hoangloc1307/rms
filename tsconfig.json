@@ -1,13 +1,45 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "CommonJS",
+    // Phiên bản javascript sẽ được compile ra
+    "target": "es2022",
+
+    // Hệ thống module sẽ được sử dụng
+    "module": "nodenext",
+
+    // Cách TypeScript tìm kiếm các module
+    "moduleResolution": "NodeNext",
+
+    // Thư mục chứa file sau khi compile
     "outDir": "dist",
+
+    // Thư mục chứa file source
     "rootDir": "src",
-    "strict": true,
+
+    // Cho phép import thư viện CommonJS bằng cú pháp import default kiểu ES Module.
     "esModuleInterop": true,
-    "skipLibCheck": true
+
+    // Bỏ qua kiểm tra lỗi type của file .d.ts
+    "skipLibCheck": true,
+
+    // Tạo source map
+    "sourceMap": true,
+
+    // Cho phép import file .json
+    "resolveJsonModule": true,
+
+    // Buộc TypeScript phải sử dụng đúng tên file (case-sensitive)
+    "forceConsistentCasingInFileNames": true,
+
+    // Bật chế độ nghiêm ngặt
+    "strict": true,
+
+    // Root import path
+    "baseUrl": ".",
+
+    // Paths
+    "paths": { "~/*": ["./src/*"] }
   },
-  "include": ["src", "generated/prisma"],
-  "exclude": ["node_modules"]
+
+  // Chỉ định các file và thư mục sẽ được TypeScript xử lý
+  "include": ["src"]
 }

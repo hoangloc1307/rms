@@ -8,7 +8,9 @@
   },
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean",
+    "build": "tsc && tsc-alias",
     "start": "cross-env NODE_ENV=production node dist/server.js"
   },
   "repository": {
@@ -29,7 +31,7 @@
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.2.4",
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
     "helmet": "^8.1.0",
@@ -39,10 +41,14 @@
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
     "pg": "^8.16.3",
+    "rimraf": "^6.1.2",
     "swagger-ui-express": "^5.0.1",
-    "yamljs": "^0.3.0"
+    "tsc-alias": "^1.8.16",
+    "yamljs": "^0.3.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@tsconfig/node-ts": "^23.6.3",
     "@types/compression": "^1.8.1",
     "@types/cookie-parser": "^1.4.9",
     "@types/cors": "^2.8.19",
@@ -62,6 +68,7 @@
     "nodemon": "^3.1.10",
     "prisma": "^7.1.0",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.2"
   }
 }
