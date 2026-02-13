@@ -2,7 +2,7 @@ Cài đặt môi trường lập trình.
 - Cấu hình file tsconfig.json để làm việc với typescript. ✅
 - Cấu hình nodemon để restart server khi có thay đổi code. ✅
 - Load file env dựa vào môi trường (development, production) và kiểm tra các biến môi trường ✅.
-- Cấu hình prettier để format code.
+- Cấu hình prettier để format code. ✅
 - Cấu hình eslint để kiểm tra code.
 - Cấu hình husky để kiểm tra code trước khi commit.
 - Cấu hình commitizen để kiểm tra code trước khi commit.

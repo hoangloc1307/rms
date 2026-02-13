@@ -48,6 +48,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.2",
     "@tsconfig/node-ts": "^23.6.3",
     "@types/compression": "^1.8.1",
     "@types/cookie-parser": "^1.4.9",
@@ -65,10 +66,14 @@
     "@types/yamljs": "^0.2.34",
     "chalk": "^5.6.2",
     "cross-env": "^7.0.3",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
     "nodemon": "^3.1.10",
     "prisma": "^7.1.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.55.0"
   }
 }

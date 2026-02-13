@@ -15,7 +15,7 @@ if (!NODE_ENV) {
 // Load đúng file .env theo môi trường
 dotenv.config({ path: path.resolve(process.cwd(), `.env.${NODE_ENV}`) });
 
-// Kiểm tra các biến môi trường
+// Kiểm tra các biến môi trường vừa load
 const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {
