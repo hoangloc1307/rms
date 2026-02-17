@@ -4,10 +4,10 @@
     "target": "es2022",
 
     // Hệ thống module sẽ được sử dụng
-    "module": "nodenext",
+    "module": "ESNext",
 
     // Cách TypeScript tìm kiếm các module
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "bundler",
 
     // Thư mục chứa file sau khi compile
     "outDir": "dist",

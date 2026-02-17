@@ -1,6 +1,6 @@
 import { CorsOptions } from 'cors';
 
-const whiteList = new Set(['http://localhost:5000', 'http://127.0.0.1:5000']);
+// const whiteList = new Set(['http://localhost:5000', 'http://127.0.0.1:5000']);
 
 export const corsConfig: CorsOptions = {
   // origin: (origin: string | undefined, callback: Function) => {

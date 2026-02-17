@@ -23,11 +23,7 @@ async function startServer() {
     //   );
     // });
     server.listen(3000, () => {
-      console.log(
-        chalk.blue(
-          `🚀 Server (${environmentConfig.ENVIRONMENT}) running at http://localhost:3000`
-        )
-      );
+      console.log(chalk.blue(`🚀 Server (${environmentConfig.ENVIRONMENT}) running at http://localhost:3000`));
     });
   } catch (error) {
     // console.error(chalk.red('❌ Không thể kết nối database:', error));

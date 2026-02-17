@@ -1,40 +1,22 @@
-import js from '@eslint/js'
-import tseslint from 'typescript-eslint'
-import prettier from 'eslint-config-prettier'
-import type { Linter } from 'eslint'
+import eslint from '@eslint/js';
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import { defineConfig } from 'eslint/config';
+import tseslint from 'typescript-eslint';
 
-const config: Linter.FlatConfig[] = [
-  js.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
+export default defineConfig(
+  // Import các rule mặc định của eslint và typescript
+  eslint.configs.recommended,
+  tseslint.configs.recommended,
+
+  // Tạo một rule block
   {
+    // Chỉ áp dụng rule này cho file .ts
     files: ['**/*.ts'],
-    languageOptions: {
-      parserOptions: {
-        project: './tsconfig.json',
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-    rules: {
-      // ===== Clean backend rules =====
-      'no-console': 'warn',
-      'no-debugger': 'warn',
 
-      // ===== TypeScript strict =====
-      '@typescript-eslint/no-unused-vars': [
-        'warn',
-        { argsIgnorePattern: '^_' },
-      ],
-      '@typescript-eslint/no-floating-promises': 'error',
-      '@typescript-eslint/strict-boolean-expressions': 'warn',
-      '@typescript-eslint/no-explicit-any': 'warn',
-
-      // ===== Best practice =====
-      'prefer-const': 'error',
-      'no-var': 'error',
-    },
+    // Các rule custom
+    rules: { 'no-console': 'error', 'no-debugger': 'warn' },
   },
 
-  prettier,
-]
-
-export default config
+  // Tắt các rule của eslint có thể xung đột với Prettier
+  eslintPluginPrettierRecommended
+);

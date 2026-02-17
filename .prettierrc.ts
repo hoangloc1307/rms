@@ -12,11 +12,13 @@ export default {
   // Chỉ thêm ngoặc kép quanh key object khi cần
   quoteProps: 'as-needed',
   // Thêm dấu phẩy cuối trong object/array (ES5+)
-  trailingComma: '',
+  trailingComma: 'es5',
   // Thêm khoảng trắng giữa {} và nội dung bên trong
   bracketSpacing: true,
   // Gộp object thành 1 dòng nếu đủ ngắn
   objectWrap: 'collapse',
   // Luôn thêm ngoặc () quanh tham số arrow function
   arrowParens: 'always',
+  // Loại bỏ ký tự xuống dòng cuối cùng
+  endOfLine: 'auto',
 };
