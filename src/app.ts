@@ -5,7 +5,7 @@ import helmet from 'helmet';
 
 const app: Application = express();
 
-(async () => {
+(() => {
   // <------------------------------------ Middlewares ------------------------------------>
   // Thêm các HTTP security headers để giảm rủi ro tấn công web.
   app.use(helmet());
