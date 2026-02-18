@@ -9,7 +9,7 @@ const prettierConfig: Options = {
   quoteProps: 'as-needed',
   trailingComma: 'all',
   bracketSpacing: true,
-  objectWrap: 'collapse',
+  objectWrap: 'preserve',
   arrowParens: 'always',
   endOfLine: 'auto',
 };

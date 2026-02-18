@@ -1,7 +1,7 @@
 import eslint from '@eslint/js';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-import tseslint from 'typescript-eslint';
+import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import { defineConfig } from 'eslint/config';
+import tseslint from 'typescript-eslint';
 
 const eslintConfig = defineConfig(
   // Các rules khuyên dùng cho JS
@@ -17,7 +17,7 @@ const eslintConfig = defineConfig(
     languageOptions: { parser: tseslint.parser, parserOptions: { projectService: true } },
 
     // Các rules tuỳ chỉnh
-    rules: { 'no-console': 'error' },
+    rules: {},
   },
 
   // Các rules cho file config
@@ -27,8 +27,8 @@ const eslintConfig = defineConfig(
     extends: tseslint.configs.recommended,
   },
 
-  // Tích hợp Prettier vào ESLint
-  eslintPluginPrettierRecommended,
+  // Tắt các rules không cần thiết hoặc xung đột với Prettier
+  eslintConfigPrettier,
 );
 
 export default eslintConfig;
