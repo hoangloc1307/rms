@@ -5,7 +5,7 @@ Cài đặt môi trường lập trình.
 - Cấu hình prettier để format code. ✅
 - Cấu hình eslint để kiểm tra code. ✅
 - Cấu hình husky, lint-staged để kiểm tra code trước khi commit. ✅
-- Cấu hình commitlint để kiểm tra commit message có đúng chuẩn không.
+- Cấu hình commitlint để kiểm tra commit message có đúng chuẩn không. ✅
 - Cấu hình semantic versioning.
 - Cấu hình github action để tự động build và deploy khi push code.
 - Cấu hình docker để build image và deploy container.
