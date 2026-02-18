@@ -1,22 +1,30 @@
-import eslint from '@eslint/js';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-import { defineConfig } from 'eslint/config';
-import tseslint from 'typescript-eslint';
+import eslint from '@eslint/js'
+import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended'
+import { defineConfig } from 'eslint/config'
+import tseslint from 'typescript-eslint'
 
 export default defineConfig(
-  // Import các rule mặc định của eslint và typescript
   eslint.configs.recommended,
-  tseslint.configs.recommended,
+  ...tseslint.configs.recommendedTypeChecked,
 
-  // Tạo một rule block
   {
-    // Chỉ áp dụng rule này cho file .ts
-    files: ['**/*.ts'],
-
-    // Các rule custom
-    rules: { 'no-console': 'error', 'no-debugger': 'warn' },
+    files: ['src/**/*.ts'],
+    languageOptions: {
+      parser: tseslint.parser,
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: import.meta.dirname
+      }
+    },
+    rules: {
+      // Clean code
+      'prefer-const': 'error',
+      'no-var': 'error',
+      'eqeqeq': ['error', 'always'],
+      'no-duplicate-imports': 'error',
+      'no-console': 'warn',
+    },
   },
 
-  // Tắt các rule của eslint có thể xung đột với Prettier
-  eslintPluginPrettierRecommended
-);
+  eslintPluginPrettierRecommended,
+)
