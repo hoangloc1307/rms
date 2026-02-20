@@ -34,6 +34,7 @@ const commitizenConfig: CommitizenGitOptions = {
   defaultIssues: '',
   defaultScope: '',
   defaultSubject: '',
+  upperCaseSubject: false,
 };
 
 export default commitizenConfig;
