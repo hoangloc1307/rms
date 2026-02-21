@@ -17,7 +17,15 @@ const eslintConfig = defineConfig(
     languageOptions: { parser: tseslint.parser, parserOptions: { projectService: true } },
 
     // Các rules tuỳ chỉnh
-    rules: {},
+    rules: {
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+    },
   },
 
   // Các rules cho file config
