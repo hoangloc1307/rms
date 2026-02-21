@@ -1,7 +1,8 @@
 // import cors from 'cors';
 import express, { Application } from 'express';
 import helmet from 'helmet';
-import { helmetConfig } from '~/config';
+import { helmetConfig } from '~/configs';
+import { httpLogger } from '~/middlewares';
 
 const app: Application = express();
 
@@ -12,6 +13,9 @@ const app: Application = express();
 
   // Set CORS response headers.
   // app.use(cors(corsConfig));
+
+  // Log requests.
+  app.use(httpLogger);
 
   app.get('/', (req, res) => {
     res.send('Hello World!');

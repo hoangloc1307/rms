@@ -8,4 +8,8 @@ export const envSchema = z.object({
     .min(1, { error: 'PORT must be greater than 0.' })
     .max(65535, { error: 'PORT must be less than 65536.' }),
   BASE_URL: z.url({ error: 'BASE_URL must be a valid URL.' }).transform((url) => url.replace(/\/$/, '')),
+  LOG_LEVEL: z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal', 'silent'], { error: 'Invalid log level.' }),
+  VERSION: z.string({ error: 'VERSION must be a string.' }).regex(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/, {
+    message: 'VERSION must be valid semver (e.g. 1.0.0)',
+  }),
 });

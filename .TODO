@@ -15,9 +15,14 @@ Cài đặt môi trường lập trình.
 - Cấu hình jest để kiểm tra code.
 
 Cài đặt bảo mật
-- Cấu hình helmet để bảo vệ các headers của server.
+- Cấu hình helmet để bảo vệ các headers của server. ✅
 - Cấu hình cors để bảo vệ các request của client.
-- Cấu hình morgan để log request và response.
 - Cấu hình cookie-parser để parse cookie.
 - Cấu hình express-validator để validate request.
 - Cấu hình compression để giảm kích thước response.
+
+Cài đặt logging và monitoring
+- Cấu hình pino và pino-http để log request và response. ✅
+- Cấu hình prometheus để collect metrics.
+- Cấu hình grafana để visualize metrics.
+- Cấu hình sentry để collect error.

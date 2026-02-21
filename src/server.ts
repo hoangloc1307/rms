@@ -3,11 +3,11 @@ import chalk from 'chalk';
 // import { prisma } from './lib/prisma';
 import http from 'http';
 import app from '~/app';
-import { environmentConfig } from '~/config';
+import { environmentConfig } from '~/configs';
 
 const server = http.createServer(app);
 
-async function startServer() {
+function startServer() {
   try {
     // await prisma.$connect();
     // console.log(chalk.green('✅ Prisma đã kết nối database thành công!'));
@@ -31,12 +31,5 @@ async function startServer() {
     process.exit(1);
   }
 }
-
-// Đảm bảo đóng connection khi tắt server
-process.on('SIGINT', async () => {
-  // await prisma.$disconnect();
-  // console.log(chalk.blue('🔌 Prisma đã ngắt kết nối database.'));
-  process.exit(0);
-});
 
 startServer();
