@@ -2,12 +2,13 @@ import cors from 'cors';
 import express, { Application } from 'express';
 import helmet from 'helmet';
 import { corsConfig, helmetConfig } from '~/configs';
-import { httpLogger } from '~/middlewares';
+import { HTTP_STATUS } from '~/constants';
+import { AppError } from '~/errors/app-error';
+import { errorHandler, httpLogger } from '~/middlewares';
 
 const app: Application = express();
 
 (() => {
-  // <------------------------------------ Middlewares ------------------------------------>
   // Thêm các HTTP security headers để giảm rủi ro tấn công web.
   app.use(helmet(helmetConfig));
 
@@ -17,9 +18,16 @@ const app: Application = express();
   // Log requests.
   app.use(httpLogger);
 
+  // Route test
   app.get('/', (req, res) => {
-    res.send('Hello World!');
+    throw new AppError({
+      httpStatusCode: HTTP_STATUS.SERVICE_UNAVAILABLE,
+      message: 'Bad Request',
+    });
   });
+
+  // Global error handler.
+  app.use(errorHandler);
 })();
 
 export default app;
