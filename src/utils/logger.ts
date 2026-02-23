@@ -15,7 +15,7 @@ const errorStream = pino.destination({
 
 const isProduction = environmentConfig.ENVIRONMENT === 'production';
 
-export const logger = !isProduction
+export const logger = isProduction
   ? pino(
       {
         level: environmentConfig.LOG_LEVEL,

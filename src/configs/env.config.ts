@@ -5,6 +5,7 @@ import z from 'zod';
 import { envSchema } from '~/schemas';
 
 // Kiểm tra NODE_ENV có tồn tại không
+// nếu chưa truyền biến để xác định môi trường thì báo lỗi.
 const NODE_ENV = process.env.NODE_ENV;
 
 if (!NODE_ENV) {
@@ -12,10 +13,10 @@ if (!NODE_ENV) {
   process.exit(1);
 }
 
-// Load đúng file .env theo môi trường
+// Load đúng file .env theo môi trường đã xác định.
 dotenv.config({ path: path.resolve(process.cwd(), `.env.${NODE_ENV}`) });
 
-// Kiểm tra các biến môi trường vừa load
+// Kiểm tra các biến môi trường vừa load.
 const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {

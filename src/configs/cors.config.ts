@@ -1,21 +1,41 @@
 import { CorsOptions } from 'cors';
 
-// const whiteList = new Set(['http://localhost:5000', 'http://127.0.0.1:5000']);
+const allowedOrigins = [/^http:\/\/localhost:\d+$/];
 
 export const corsConfig: CorsOptions = {
-  // origin: (origin: string | undefined, callback: Function) => {
-  //   if (!origin || whiteList.has(origin)) {
-  //     callback(null, true);
-  //   } else {
-  //     // callback(
-  //     //   new AppError(ERROR_CODE.CORS_ERROR, 'Origin not allowed by CORS policy')
-  //     // );
-  //   }
-  // },
-  // methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Các HTTP method được phép trong CORS preflight (OPTIONS)
-  // allowedHeaders: ['Content-Type', 'Authorization'], // Các request headers mà client được phép gửi lên server
-  // exposedHeaders: ['RateLimit-Limit', 'RateLimit-Remaining'], // Các request headers mà client được phép gửi lên server
-  // credentials: true, // Cho phép gửi kèm thông tin xác thực (cookie, Authorization header)
-  // maxAge: 10 * 60, // Thời gian (giây) cache kết quả preflight
-  // // optionsSuccessStatus: HTTP_STATUS.NO_CONTENT, // HTTP status trả về khi preflight thành công
+  // Cấu hình Access-Control-Allow-Origin CORS header
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    if (!origin) return callback(null, true);
+
+    const isAllowed = allowedOrigins.some((allowed) =>
+      allowed instanceof RegExp ? allowed.test(origin) : allowed === origin,
+    );
+
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+
+  // Cấu hình Access-Control-Allow-Methods CORS header
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+
+  // Cấu hình Access-Control-Allow-Headers CORS header, là các headers mà client được phép gửi lên server
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id'],
+
+  // Cấu hình Access-Control-Expose-Headers CORS header, là các headers mà client được phép đọc từ response
+  exposedHeaders: ['X-Request-Id'],
+
+  // Cấu hình Access-Control-Allow-Credentials CORS header, cho phép gửi kèm thông tin xác thực (cookie, Authorization header)
+  credentials: true,
+
+  // Cấu hình Access-Control-Max-Age CORS header, thời gian (giây) cache kết quả preflight
+  maxAge: 300,
+
+  // Cấu hình preflightContinue, nếu là true thì preflight sẽ không trả về response mà sẽ tiếp tục xử lý request
+  preflightContinue: false,
+
+  // HTTP status code mà server sẽ trả về cho request OPTIONS (preflight) khi thành công.
+  optionsSuccessStatus: 204,
 };

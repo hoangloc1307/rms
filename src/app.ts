@@ -1,7 +1,7 @@
-// import cors from 'cors';
+import cors from 'cors';
 import express, { Application } from 'express';
 import helmet from 'helmet';
-import { helmetConfig } from '~/configs';
+import { corsConfig, helmetConfig } from '~/configs';
 import { httpLogger } from '~/middlewares';
 
 const app: Application = express();
@@ -12,7 +12,7 @@ const app: Application = express();
   app.use(helmet(helmetConfig));
 
   // Set CORS response headers.
-  // app.use(cors(corsConfig));
+  app.use(cors(corsConfig));
 
   // Log requests.
   app.use(httpLogger);
