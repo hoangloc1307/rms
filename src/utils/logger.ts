@@ -1,5 +1,5 @@
 import pino from 'pino';
-import { environmentConfig } from '~/configs';
+import { env } from '~/configs';
 
 const accessStream = pino.destination({
   dest: './logs/access.log',
@@ -13,12 +13,12 @@ const errorStream = pino.destination({
   sync: false,
 });
 
-const isProduction = environmentConfig.ENVIRONMENT === 'production';
+const isProduction = env.ENVIRONMENT === 'production';
 
 export const logger = isProduction
   ? pino(
       {
-        level: environmentConfig.LOG_LEVEL,
+        level: env.LOG_LEVEL,
         timestamp: pino.stdTimeFunctions.isoTime,
         redact: {
           paths: ['req.headers.authorization', 'req.headers.cookie', 'req.body.password', 'req.body.refreshToken'],
@@ -31,7 +31,7 @@ export const logger = isProduction
       pino.multistream([{ stream: accessStream }, { level: 'error', stream: errorStream }]),
     )
   : pino({
-      level: environmentConfig.LOG_LEVEL,
+      level: env.LOG_LEVEL,
       timestamp: pino.stdTimeFunctions.isoTime,
       redact: {
         paths: ['req.headers.authorization', 'req.headers.cookie', 'req.body.password', 'req.body.refreshToken'],

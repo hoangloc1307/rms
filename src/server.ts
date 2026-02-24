@@ -3,7 +3,7 @@ import chalk from 'chalk';
 // import { prisma } from './lib/prisma';
 import http from 'http';
 import app from '~/app';
-import { environmentConfig } from '~/configs';
+import { env } from '~/configs';
 
 const server = http.createServer(app);
 
@@ -23,7 +23,7 @@ function startServer() {
     //   );
     // });
     server.listen(3000, () => {
-      console.log(chalk.blue(`🚀 Server (${environmentConfig.ENVIRONMENT}) running at http://localhost:3000`));
+      console.log(chalk.blue(`🚀 Server (${env.ENVIRONMENT}) running at http://localhost:3000`));
     });
   } catch (error) {
     // console.error(chalk.red('❌ Không thể kết nối database:', error));

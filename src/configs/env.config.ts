@@ -20,10 +20,9 @@ dotenv.config({ path: path.resolve(process.cwd(), `.env.${NODE_ENV}`) });
 const parsedEnv = envSchema.safeParse(process.env);
 
 if (!parsedEnv.success) {
-  console.error(chalk.red('❌ Invalid environment variables:'));
-  const formatted = z.formatError(parsedEnv.error);
-  console.error(formatted);
+  console.error(chalk.red('❌ Invalid environment configuration:'));
+  console.error(z.prettifyError(parsedEnv.error));
   process.exit(1);
 }
 
-export const environmentConfig = parsedEnv.data;
+export const env = Object.freeze(parsedEnv.data);
