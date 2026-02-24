@@ -5,6 +5,7 @@ import { corsConfig, helmetConfig } from '~/configs';
 import { HTTP_STATUS } from '~/constants';
 import { AppError } from '~/errors/app-error';
 import { errorHandler, httpLogger } from '~/middlewares';
+import { ApiResponse } from '~/utils';
 
 const app: Application = express();
 
@@ -25,6 +26,19 @@ const app: Application = express();
       message: 'Conflict',
       errorCode: 'CONFLICT',
     });
+  });
+
+  app.get('/ok', (req, res) => {
+    ApiResponse.ok(res);
+  });
+
+  app.get('/paginated', (req, res) => {
+    const data = [
+      { id: 1, name: 'Item 1' },
+      { id: 2, name: 'Item 2' },
+      { id: 3, name: 'Item 3' },
+    ];
+    ApiResponse.paginated(res, data, 1, 10, 89);
   });
 
   // Global error handler.
