@@ -21,8 +21,9 @@ const app: Application = express();
   // Route test
   app.get('/', (req, res) => {
     throw new AppError({
-      httpStatusCode: HTTP_STATUS.SERVICE_UNAVAILABLE,
-      message: 'Bad Request',
+      httpStatusCode: HTTP_STATUS.CONFLICT,
+      message: 'Conflict',
+      errorCode: 'CONFLICT',
     });
   });
 

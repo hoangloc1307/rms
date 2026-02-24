@@ -19,11 +19,6 @@ export const logger = isProduction
   ? pino(
       {
         level: environmentConfig.LOG_LEVEL,
-        base: {
-          service: 'rms-api',
-          env: environmentConfig.ENVIRONMENT,
-          version: environmentConfig.VERSION,
-        },
         timestamp: pino.stdTimeFunctions.isoTime,
         redact: {
           paths: ['req.headers.authorization', 'req.headers.cookie', 'req.body.password', 'req.body.refreshToken'],
@@ -37,11 +32,6 @@ export const logger = isProduction
     )
   : pino({
       level: environmentConfig.LOG_LEVEL,
-      base: {
-        service: 'rms-api',
-        env: environmentConfig.ENVIRONMENT,
-        version: environmentConfig.VERSION,
-      },
       timestamp: pino.stdTimeFunctions.isoTime,
       redact: {
         paths: ['req.headers.authorization', 'req.headers.cookie', 'req.body.password', 'req.body.refreshToken'],

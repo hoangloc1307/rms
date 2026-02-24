@@ -18,8 +18,13 @@ export const httpLogger = pinoHttp({
     return id;
   },
 
+  redact: {
+    paths: ['req.headers.authorization', 'req.headers.cookie', 'req.body.password', 'req.body.token'],
+    remove: true,
+  },
+
   customLogLevel: (req, res, err) => {
-    if (err || res.statusCode >= 500) return 'error';
+    if (res.statusCode >= 500) return 'error';
     if (res.statusCode >= 400) return 'warn';
     return 'info';
   },
@@ -32,10 +37,20 @@ export const httpLogger = pinoHttp({
     return `${req.method} ${req.url} failed`;
   },
 
-  customProps: function (req, res) {
+  customProps: (req, res) => {
     return {
-      responseTime: res.getHeader('X-Response-Time'),
+      method: req.method,
+      url: req.url,
+      requestId: req.id,
       userId: (req as RequestWithUser).user?.id,
+      httpStatus: res.statusCode,
     };
+  },
+
+  customErrorObject: () => ({}),
+
+  serializers: {
+    req: (req) => undefined,
+    res: (res) => undefined,
   },
 });
