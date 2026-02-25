@@ -2,11 +2,9 @@ import cors from 'cors';
 import express, { Application } from 'express';
 import helmet from 'helmet';
 import { corsConfig, helmetConfig } from '~/configs';
-import { HTTP_STATUS } from '~/constants';
-import { AppError } from '~/errors/app-error';
 import { errorHandler, httpLogger } from '~/middlewares';
 import { notFoundHandler } from '~/middlewares/not-found-handler';
-import { ApiResponse } from '~/utils';
+import { routesConfig } from '~/routes';
 
 const app: Application = express();
 
@@ -20,26 +18,9 @@ const app: Application = express();
   // Log requests.
   app.use(httpLogger);
 
-  // Route test
-  app.get('/', () => {
-    throw new AppError({
-      httpStatusCode: HTTP_STATUS.CONFLICT,
-      message: 'Conflict',
-      errorCode: 'CONFLICT',
-    });
-  });
-
-  app.get('/ok', (req, res) => {
-    ApiResponse.ok(res);
-  });
-
-  app.get('/paginated', (req, res) => {
-    const data = [
-      { id: 1, name: 'Item 1' },
-      { id: 2, name: 'Item 2' },
-      { id: 3, name: 'Item 3' },
-    ];
-    ApiResponse.paginated(res, data, 1, 10, 89);
+  // Routes
+  routesConfig.forEach(({ path, router }) => {
+    app.use(`/${path}`, router);
   });
 
   // Not found handler

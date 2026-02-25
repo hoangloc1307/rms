@@ -27,7 +27,7 @@ const pinoOptions: LoggerOptions = {
   },
 };
 
-export const logger = !isProduction
+export const logger = isProduction
   ? pino(
       pinoOptions,
       pino.multistream(
