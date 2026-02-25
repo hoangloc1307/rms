@@ -5,6 +5,7 @@ import { corsConfig, helmetConfig } from '~/configs';
 import { HTTP_STATUS } from '~/constants';
 import { AppError } from '~/errors/app-error';
 import { errorHandler, httpLogger } from '~/middlewares';
+import { notFoundHandler } from '~/middlewares/not-found-handler';
 import { ApiResponse } from '~/utils';
 
 const app: Application = express();
@@ -20,7 +21,7 @@ const app: Application = express();
   app.use(httpLogger);
 
   // Route test
-  app.get('/', (req, res) => {
+  app.get('/', () => {
     throw new AppError({
       httpStatusCode: HTTP_STATUS.CONFLICT,
       message: 'Conflict',
@@ -40,6 +41,9 @@ const app: Application = express();
     ];
     ApiResponse.paginated(res, data, 1, 10, 89);
   });
+
+  // Not found handler
+  app.use(notFoundHandler);
 
   // Global error handler.
   app.use(errorHandler);
