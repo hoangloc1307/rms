@@ -49,6 +49,20 @@ export class ApiResponse<T = unknown> {
     }).send(res);
   }
 
+  static Error<T>(
+    res: Response,
+    message: string,
+    data?: T,
+    httpStatus: HttpStatus = HTTP_STATUS.INTERNAL_SERVER_ERROR,
+  ): Response {
+    return new ApiResponse<T>({
+      success: false,
+      message,
+      data,
+      httpStatus,
+    }).send(res);
+  }
+
   static ok<T>(res: Response, message = 'OK', data?: T) {
     return ApiResponse.Success(res, message, data, HTTP_STATUS.OK);
   }
