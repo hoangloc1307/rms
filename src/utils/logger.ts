@@ -1,4 +1,4 @@
-import pino from 'pino';
+import pino, { LoggerOptions } from 'pino';
 import { env } from '~/configs';
 
 const accessStream = pino.destination({
@@ -15,28 +15,33 @@ const errorStream = pino.destination({
 
 const isProduction = env.ENVIRONMENT === 'production';
 
-export const logger = isProduction
+const pinoOptions: LoggerOptions = {
+  level: env.LOG_LEVEL,
+  timestamp: pino.stdTimeFunctions.isoTime,
+  redact: {
+    paths: ['req.headers.authorization', 'req.headers.cookie', 'req.body.password', 'req.body.refreshToken'],
+    remove: true,
+  },
+  formatters: {
+    level: (label) => ({ level: label }),
+  },
+};
+
+export const logger = !isProduction
   ? pino(
-      {
-        level: env.LOG_LEVEL,
-        timestamp: pino.stdTimeFunctions.isoTime,
-        redact: {
-          paths: ['req.headers.authorization', 'req.headers.cookie', 'req.body.password', 'req.body.refreshToken'],
-          remove: true,
+      pinoOptions,
+      pino.multistream(
+        [
+          { level: 'info', stream: accessStream },
+          { level: 'error', stream: errorStream },
+        ],
+        {
+          dedupe: true,
         },
-        formatters: {
-          level: (label) => ({ level: label }),
-        },
-      },
-      pino.multistream([{ stream: accessStream }, { level: 'error', stream: errorStream }]),
+      ),
     )
   : pino({
-      level: env.LOG_LEVEL,
-      timestamp: pino.stdTimeFunctions.isoTime,
-      redact: {
-        paths: ['req.headers.authorization', 'req.headers.cookie', 'req.body.password', 'req.body.refreshToken'],
-        remove: true,
-      },
+      ...pinoOptions,
       transport: {
         target: 'pino-pretty',
         options: {
@@ -44,8 +49,5 @@ export const logger = isProduction
           translateTime: 'SYS:standard',
           levelFirst: true,
         },
-      },
-      formatters: {
-        level: (label) => ({ level: label }),
       },
     });

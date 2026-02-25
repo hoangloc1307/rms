@@ -3,7 +3,7 @@ import { HTTP_STATUS, HttpStatus } from '~/constants';
 import { AppError } from '~/errors/app-error';
 import { logger } from '~/utils';
 
-export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+export const errorHandler = (err: Error, req: Request, res: Response, _next: NextFunction) => {
   let statusCode: HttpStatus = HTTP_STATUS.INTERNAL_SERVER_ERROR;
   let message = 'Internal Server Error';
   let metadata: unknown;
@@ -20,6 +20,8 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
     logger.error({
       err,
       requestId: req.id,
+      method: req.method,
+      url: req.url,
     });
   }
 

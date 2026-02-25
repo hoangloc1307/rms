@@ -1,6 +1,8 @@
 import { randomUUID } from 'crypto';
 import { IncomingMessage } from 'http';
+import { LevelWithSilent } from 'pino';
 import pinoHttp from 'pino-http';
+import type { SerializedRequest, SerializedResponse } from 'pino-std-serializers';
 import { logger } from '~/utils';
 
 interface RequestWithUser extends IncomingMessage {
@@ -23,34 +25,36 @@ export const httpLogger = pinoHttp({
     remove: true,
   },
 
-  customLogLevel: (req, res, err) => {
-    if (res.statusCode >= 500) return 'error';
+  customLogLevel: (_req, res, _err): LevelWithSilent => {
+    if (res.statusCode >= 500) return 'silent';
     if (res.statusCode >= 400) return 'warn';
     return 'info';
   },
 
-  customSuccessMessage: function (req, _res) {
-    return `${req.method} ${req.url} completed`;
-  },
+  // customSuccessMessage: function (req, _res) {
+  //   return `${req.method} ${req.url} completed`;
+  // },
 
-  customErrorMessage: function (req, _res, _err) {
-    return `${req.method} ${req.url} failed`;
-  },
+  // customErrorMessage: function (req, _res, _err) {
+  //   return `${req.method} ${req.url} failed`;
+  // },
 
-  customProps: (req, res) => {
+  customProps: (req, _res) => {
     return {
-      method: req.method,
-      url: req.url,
-      requestId: req.id,
       userId: (req as RequestWithUser).user?.id,
-      httpStatus: res.statusCode,
     };
   },
 
   customErrorObject: () => ({}),
 
   serializers: {
-    req: (req) => undefined,
-    res: (res) => undefined,
+    req: (req: SerializedRequest) => ({
+      method: req.method,
+      url: req.url,
+      requestId: req.id,
+    }),
+    res: (res: SerializedResponse) => ({
+      httpStatus: res.statusCode,
+    }),
   },
 });
