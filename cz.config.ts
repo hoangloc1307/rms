@@ -1,4 +1,4 @@
-import type { CommitizenGitOptions } from 'cz-git';
+import type { CommitizenGitOptions, CommitMessageOptions } from 'cz-git';
 
 const commitizenConfig: CommitizenGitOptions = {
   messages: {
@@ -9,18 +9,40 @@ const commitizenConfig: CommitizenGitOptions = {
     body: 'Mô tả chi tiết (tùy chọn):',
     footer: 'Footer (tùy chọn):',
     confirmCommit: 'Bạn có chắc chắn muốn tạo commit này?',
-    footerPrefixesSelect: 'Chọn prefix footer:',
+    footerPrefixesSelect: 'Chọn footer prefix:',
+    customFooterPrefix: 'Nhập footer prefix tuỳ chỉnh:',
+    breaking: 'Liệt kê bất kỳ thay đổi quan trọng nào (tùy chọn). Sử dụng "|" để xuống dòng:\n',
   },
   types: [
-    { value: 'feat', name: 'feat     : ✨ Thêm feature mới' },
-    { value: 'fix', name: 'fix      : 🐛 Fix bug' },
-    { value: 'refactor', name: 'refactor : ♻️  Tái cấu trúc code' },
-    { value: 'docs', name: 'docs     : 📝 Thay đổi tài liệu' },
-    { value: 'chore', name: 'chore    : 🔨 Thay đổi config/tooling' },
-    { value: 'test', name: 'test     : ✅ Thêm hoặc sửa test' },
-    { value: 'perf', name: 'perf     : ⚡️ Cải thiện hiệu năng' },
+    { value: 'feat', name: '✨ feat     : Thêm feature mới', emoji: '✨' },
+    { value: 'fix', name: '🐛 fix      : Fix bug', emoji: '🐛' },
+    { value: 'refactor', name: '♻️  refactor : Tái cấu trúc code', emoji: '♻️' },
+    { value: 'docs', name: '📝 docs     : Thay đổi tài liệu', emoji: '📝' },
+    { value: 'chore', name: '🔨 chore    : Thay đổi config/tooling', emoji: '🔨' },
+    { value: 'test', name: '✅ test     : Thêm hoặc sửa test', emoji: '✅' },
+    { value: 'perf', name: '⚡️ perf     : Cải thiện hiệu năng', emoji: '⚡️' },
+    { value: 'style', name: '💄 style    : Thay đổi format code', emoji: '💄' },
   ],
   useEmoji: true,
+  emojiAlign: 'center',
+  formatMessageCB: ({ type, scope, subject, body, footer, breaking, emoji }: CommitMessageOptions) => {
+    let message = `${emoji} ${type}`;
+    if (scope) {
+      message += `(${scope})`;
+    }
+    message += `: ${subject}`;
+
+    if (body) {
+      message += `\n\n${body}`;
+    }
+    if (breaking) {
+      message += `\n\nBREAKING CHANGE: ${breaking}`;
+    }
+    if (footer) {
+      message += `${footer}`;
+    }
+    return message;
+  },
   scopes: [],
   allowCustomScopes: true,
   customScopesAlias: 'tuỳ chỉnh',
