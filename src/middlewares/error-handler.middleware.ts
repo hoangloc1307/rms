@@ -1,9 +1,11 @@
 import type { NextFunction, Request, Response } from 'express';
 import { HTTP_STATUS, HttpStatus } from '~/constants';
-import { AppError } from '~/errors/app-error';
+import { AppError, normalizeBodyParserError } from '~/errors';
 import { logger } from '~/utils';
 
 export const errorHandler = (err: Error, req: Request, res: Response, _next: NextFunction) => {
+  err = normalizeBodyParserError(err);
+
   let statusCode: HttpStatus = HTTP_STATUS.INTERNAL_SERVER_ERROR;
   let message = 'Internal Server Error';
   let metadata: unknown;

@@ -3,8 +3,9 @@ import type { UserConfig } from '@commitlint/types';
 const commitlintConfig: UserConfig = {
   extends: ['@commitlint/config-conventional'],
   parserPreset: {
+    name: 'conventional-changelog-conventionalcommits',
     parserOpts: {
-      headerPattern: /^(\p{Emoji_Presentation}?\s?)(\w*)(?:\((.*)\))?!?: (.*)$/u,
+      headerPattern: /^(\S*\s*)([\w-]+)(?:\(([^)]+)\))?!?: (.+)$/,
       headerCorrespondence: ['emoji', 'type', 'scope', 'subject'],
     },
   },

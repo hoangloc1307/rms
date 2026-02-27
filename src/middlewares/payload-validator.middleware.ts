@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ZodObject } from 'zod';
-import { AppError } from '~/errors/app-error';
+import { AppError } from '~/errors';
 
 export const payloadValidator = (schema: ZodObject) => (req: Request, res: Response, next: NextFunction) => {
   const result = schema.safeParse(req.body);
