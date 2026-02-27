@@ -1,7 +1,17 @@
 import { Request, Response } from 'express';
-import { ApiResponse } from '~/utils';
 import prettyMs from 'pretty-ms';
 import { env } from '~/configs';
+import { prisma } from '~/database/prisma';
+import { ApiResponse } from '~/utils';
+
+async function checkDatabase(): Promise<string> {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    return 'healthy';
+  } catch {
+    return 'unhealthy';
+  }
+}
 
 export const healthCheck = async (_req: Request, res: Response) => {
   const healthData = {
@@ -33,16 +43,6 @@ export const healthCheck = async (_req: Request, res: Response) => {
 
   return ApiResponse.Success(res, 'Service is healthy', healthData);
 };
-
-async function checkDatabase(): Promise<string> {
-  try {
-    // Database check logic
-    await Promise.resolve('healthy');
-    return 'healthy';
-  } catch {
-    return 'unhealthy';
-  }
-}
 
 export const healthController = {
   healthCheck,
