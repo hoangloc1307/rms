@@ -9,7 +9,7 @@ interface RoutesConfig {
 }
 
 export const routesConfig: RoutesConfig[] = [
-  { path: 'health', router: healthRoutes },
-  { path: 'auth', router: authRoutes },
-  { path: 'users', router: userRoutes },
+  { path: '/health', router: healthRoutes },
+  { path: '/auth', router: authRoutes },
+  { path: '/users', router: userRoutes },
 ];

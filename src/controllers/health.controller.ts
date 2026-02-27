@@ -43,3 +43,7 @@ async function checkDatabase(): Promise<string> {
     return 'unhealthy';
   }
 }
+
+export const healthController = {
+  healthCheck,
+};

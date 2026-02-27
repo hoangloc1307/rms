@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { HTTP_STATUS, HttpStatus } from '~/constants';
 import { AppError } from '~/errors/app-error';
 import { logger } from '~/utils';

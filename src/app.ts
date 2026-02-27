@@ -15,12 +15,15 @@ const app: Application = express();
   // Set CORS response headers.
   app.use(cors(corsConfig));
 
+  // Parse JSON request bodies.
+  app.use(express.json());
+
   // Log requests.
   app.use(httpLogger);
 
   // Routes
   routesConfig.forEach(({ path, router }) => {
-    app.use(`/${path}`, router);
+    app.use(path, router);
   });
 
   // Not found handler

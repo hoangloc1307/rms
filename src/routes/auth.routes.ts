@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { ApiResponse } from '~/utils';
+import { authController } from '~/controllers';
+import { payloadValidator } from '~/middlewares';
+import { loginSchema } from '~/schemas';
 
 const router = Router();
 
-router.post('/login', (_req, res) => {
-  ApiResponse.ok(res, 'Login');
-});
+router.post('/login', payloadValidator(loginSchema), authController.login);
 
 export default router;
