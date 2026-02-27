@@ -57,4 +57,5 @@ export const envSchema = z.object({
       message: 'Must be a positive number (ms) or valid positive time string (e.g. 15m, 7d, 1h)',
     },
   ),
+  DATABASE_URL: z.url({ error: 'Must be a valid URL.' }),
 });

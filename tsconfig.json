@@ -12,9 +12,6 @@
     // Thư mục chứa file sau khi compile
     "outDir": "dist",
 
-    // Thư mục chứa file source
-    "rootDir": "src",
-
     // Cho phép import thư viện CommonJS bằng cú pháp import default kiểu ES Module.
     "esModuleInterop": true,
 
