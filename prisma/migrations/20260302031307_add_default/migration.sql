@@ -1,0 +1,11 @@
+-- AlterTable
+ALTER TABLE "features" ALTER COLUMN "created_at" SET DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "role_permission" ALTER COLUMN "created_at" SET DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "roles" ALTER COLUMN "created_at" SET DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "user_permissions" ALTER COLUMN "created_at" SET DEFAULT CURRENT_TIMESTAMP;

@@ -1,14 +1,14 @@
 import { NextFunction, Response } from 'express';
-import { prisma } from '~/database/prisma';
 import { LoginSchema } from '~/schemas';
+import { authService } from '~/services';
 import { TypedRequest } from '~/types/express';
 import { ApiResponse } from '~/utils';
 
 const login = async (req: TypedRequest<LoginSchema>, res: Response, next: NextFunction) => {
   try {
-    const { username } = req.body;
-    const user = await prisma.user.findUnique({ where: { userId: username } });
-    ApiResponse.ok(res, 'OK', user);
+    const { username, password } = req.body;
+    const { accessToken, refreshToken } = await authService.login(username, password);
+    ApiResponse.ok(res, 'Login successfully!', { accessToken, refreshToken });
   } catch (error) {
     next(error);
   }

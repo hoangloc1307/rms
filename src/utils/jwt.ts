@@ -12,8 +12,8 @@ export function generateAccessToken(payload: TokenPayload) {
   });
 }
 
-export function generateRefreshToken(payload: TokenPayload) {
-  return jwt.sign(payload, env.JWT_REFRESH_SECRET, {
+export function generateRefreshToken(userId: string) {
+  return jwt.sign({ userId }, env.JWT_REFRESH_SECRET, {
     expiresIn: env.JWT_REFRESH_TOKEN_EXPIRY,
   });
 }
@@ -23,5 +23,5 @@ export function verifyAccessToken(token: string) {
 }
 
 export function verifyRefreshToken(token: string) {
-  return jwt.verify(token, env.JWT_REFRESH_SECRET) as TokenPayload;
+  return jwt.verify(token, env.JWT_REFRESH_SECRET) as { userId: string };
 }
