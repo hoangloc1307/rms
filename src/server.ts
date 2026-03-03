@@ -3,6 +3,7 @@ import http from 'http';
 import app from '~/app';
 import { env } from '~/configs';
 import { prisma } from '~/database/prisma';
+import { initJobs } from '~/jobs';
 
 const server = http.createServer(app);
 
@@ -10,14 +11,17 @@ async function startServer() {
   try {
     // Connect db
     await prisma.$connect();
-    console.log(chalk.green('✅ Prisma đã kết nối database thành công!'));
+    console.log(chalk.green('✅ Prisma connected to database successfully!'));
 
     // Server start
     server.listen(env.PORT, () => {
       console.log(chalk.blue(`🚀 Server ${env.ENVIRONMENT} running at ${env.BASE_URL}:${env.PORT}`));
     });
+
+    // Start jobs
+    await initJobs();
   } catch (error) {
-    console.error(chalk.red('❌ Không thể kết nối database:', error));
+    console.error(chalk.red('❌ Failed to start server:', error));
     process.exit(1);
   }
 }
