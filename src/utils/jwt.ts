@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { env } from '~/configs';
 
-interface TokenPayload {
+export interface TokenPayload {
   userId: string;
   roles: string[];
 }
