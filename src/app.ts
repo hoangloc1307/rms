@@ -23,7 +23,7 @@ const app: Application = express();
 
   // Routes
   routesConfig.forEach(({ path, router }) => {
-    app.use(path, router);
+    app.use(`/api${path}`, router);
   });
 
   // Not found handler

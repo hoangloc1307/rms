@@ -4,7 +4,22 @@ import { verifyPassword } from '~/helpers';
 import { generateAccessToken, generateRefreshToken } from '~/utils';
 
 const login = async (username: string, password: string) => {
-  const user = await prisma.user.findUnique({ where: { username } });
+  const user = await prisma.user.findUnique({
+    where: { username },
+    include: {
+      userRole: {
+        select: {
+          roleCode: true,
+          sectionCode: true,
+        },
+        where: {
+          role: {
+            isActive: true,
+          },
+        },
+      },
+    },
+  });
 
   if (!user || !user.isActive) {
     throw AppError.unauthorized('Invalid email or password');
@@ -16,13 +31,9 @@ const login = async (username: string, password: string) => {
     throw AppError.unauthorized('Invalid email or password');
   }
 
-  const userRoles = await prisma.userRole.findMany({
-    where: { username },
-  });
+  const roles = user.userRole.map((role) => `${role.roleCode}:${role.sectionCode}`);
 
-  const permissions = userRoles.map((userRole) => `${userRole.roleCode}:${userRole.sectionCode}`);
-
-  const accessToken = generateAccessToken({ userId: user.username, roles: permissions });
+  const accessToken = generateAccessToken({ userId: user.username, roles });
   const refreshToken = generateRefreshToken(user.username);
 
   return { accessToken, refreshToken };
