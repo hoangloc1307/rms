@@ -1,15 +1,20 @@
 import { Router } from 'express';
 import { authenticate } from '~/middlewares';
-import { ApiResponse, sendEmail } from '~/utils';
+import { ApiResponse, renderTemplate, sendEmail } from '~/utils';
 
 const router = Router();
 
 router.post('/', authenticate, async (_req, res) => {
+  const html = renderTemplate('request-created', {
+    name: 'John Doe',
+    requestId: '1234567890',
+    status: 'Pending',
+  });
+
   await sendEmail({
-    subject: 'test gửi mail',
-    data: {},
-    email: 'recipient@example.com',
-    html: 'This is a test email.',
+    subject: 'Test send mail',
+    to: ['test.to1@gmail.com', 'test.to2@gmail.com'],
+    html,
   });
   ApiResponse.ok(res, 'Create user');
 });

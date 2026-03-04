@@ -6,6 +6,7 @@ interface AppErrorOptions {
   errorCode: string;
   isOperational?: boolean;
   metadata?: unknown;
+  cause?: unknown;
 }
 
 export class AppError extends Error {
@@ -13,13 +14,17 @@ export class AppError extends Error {
   public readonly errorCode: string;
   public readonly isOperational: boolean;
   public readonly metadata?: unknown;
+  public readonly cause?: unknown;
 
-  constructor({ httpStatusCode, message, errorCode, metadata, isOperational = true }: AppErrorOptions) {
+  constructor({ httpStatusCode, message, errorCode, metadata, isOperational = true, cause }: AppErrorOptions) {
     super(message);
     this.httpStatusCode = httpStatusCode;
     this.errorCode = errorCode;
     this.metadata = metadata;
     this.isOperational = isOperational;
+    this.cause = cause;
+
+    Error.captureStackTrace(this, this.constructor);
   }
 
   static unauthorized(message = 'Unauthorized') {
@@ -42,11 +47,12 @@ export class AppError extends Error {
     return new AppError({ httpStatusCode: HTTP_STATUS.CONFLICT, message, errorCode: 'CONFLICT' });
   }
 
-  static server(message = 'Internal Server Error') {
+  static server(message = 'Internal Server Error', cause?: unknown) {
     return new AppError({
       httpStatusCode: HTTP_STATUS.INTERNAL_SERVER_ERROR,
       message,
       errorCode: 'INTERNAL_SERVER_ERROR',
+      cause,
     });
   }
 }

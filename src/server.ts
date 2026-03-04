@@ -4,6 +4,7 @@ import app from '~/app';
 import { env } from '~/configs';
 import { prisma } from '~/database/prisma';
 import { initJobs } from '~/jobs';
+import { initMailer } from '~/utils';
 
 const server = http.createServer(app);
 
@@ -11,15 +12,18 @@ async function startServer() {
   try {
     // Connect db
     await prisma.$connect();
-    console.log(chalk.green('✅ Prisma connected to database successfully!'));
+    console.log(chalk.green('✅ Prisma connected to database successfully.'));
 
     // Server start
     server.listen(env.PORT, () => {
-      console.log(chalk.blue(`🚀 Server ${env.ENVIRONMENT} running at ${env.BASE_URL}:${env.PORT}`));
+      console.log(chalk.green(`✅ Server ${env.ENVIRONMENT} running at ${env.BASE_URL}:${env.PORT}`));
     });
 
     // Start jobs
     await initJobs();
+
+    // Init mailer
+    await initMailer();
   } catch (error) {
     console.error(chalk.red('❌ Failed to start server:', error));
     process.exit(1);

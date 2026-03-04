@@ -1,7 +1,7 @@
-import nodemailer from 'nodemailer';
+import { createTransport, type Transporter } from 'nodemailer';
 import { env } from '~/configs';
 
-let transporter: nodemailer.Transporter | null = null;
+let transporter: Transporter;
 
 export function getTransporter() {
   if (transporter) return transporter;
@@ -11,7 +11,7 @@ export function getTransporter() {
   const user = env.SMTP_USER;
   const pass = env.SMTP_PASS;
 
-  transporter = nodemailer.createTransport({
+  transporter = createTransport({
     host,
     port,
     secure: port === 465,
