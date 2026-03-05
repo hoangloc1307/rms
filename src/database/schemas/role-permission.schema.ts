@@ -1,10 +1,15 @@
 import { pgTable, varchar, char, boolean, timestamp, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
-import { roles } from './roles';
-import { features } from './features';
+import { roles } from './roles.schema';
+import { features } from './features.schema';
+import { relations } from 'drizzle-orm';
+
+// ==================== ENUMS ====================
 
 export const actionEnum = pgEnum('action', ['CREATE', 'READ', 'UPDATE', 'DELETE', 'MANAGE', 'APPROVAL']);
 
 export const decisionEnum = pgEnum('decision', ['ALLOW', 'DENY']);
+
+// ==================== TABLE DEFINITIONS ====================
 
 export const rolePermissions = pgTable(
   'role_permission',
@@ -39,3 +44,16 @@ export const rolePermissions = pgTable(
     }),
   ],
 );
+
+// ==================== RELATIONSHIPS ====================
+
+export const rolePermissionRelations = relations(rolePermissions, ({ one }) => ({
+  role: one(roles, {
+    fields: [rolePermissions.roleCode],
+    references: [roles.code],
+  }),
+  feature: one(features, {
+    fields: [rolePermissions.featureCode],
+    references: [features.code],
+  }),
+}));

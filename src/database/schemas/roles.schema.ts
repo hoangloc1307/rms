@@ -1,4 +1,9 @@
+import { relations } from 'drizzle-orm';
 import { boolean, char, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { rolePermissions } from '~/database/schemas/role-permission.schema';
+import { userRoles } from '~/database/schemas/user-role.schema';
+
+// ==================== TABLE DEFINITIONS ====================
 
 export const roles = pgTable('roles', {
   code: varchar('code', { length: 50 }).primaryKey(),
@@ -9,3 +14,10 @@ export const roles = pgTable('roles', {
   updatedAt: timestamp('updated_at', { withTimezone: true, precision: 0 }),
   updatedBy: char('updated_by', { length: 8 }),
 });
+
+// ==================== RELATIONSHIPS ====================
+
+export const roleRelations = relations(roles, ({ many }) => ({
+  userRoles: many(userRoles),
+  rolePermissions: many(rolePermissions),
+}));

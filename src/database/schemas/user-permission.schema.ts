@@ -1,7 +1,10 @@
 import { pgTable, char, varchar, boolean, timestamp, primaryKey } from 'drizzle-orm/pg-core';
-import { users } from './users';
-import { features } from './features';
-import { actionEnum, decisionEnum } from './role-permission';
+import { users } from './users.schema';
+import { features } from './features.schema';
+import { actionEnum, decisionEnum } from './role-permission.schema';
+import { relations } from 'drizzle-orm';
+
+// ==================== TABLE DEFINITIONS ====================
 
 export const userPermissions = pgTable(
   'user_permission',
@@ -35,3 +38,16 @@ export const userPermissions = pgTable(
     }),
   ],
 );
+
+// ==================== RELATIONSHIPS ====================
+
+export const userPermissionRelations = relations(userPermissions, ({ one }) => ({
+  user: one(users, {
+    fields: [userPermissions.username],
+    references: [users.username],
+  }),
+  feature: one(features, {
+    fields: [userPermissions.featureCode],
+    references: [features.code],
+  }),
+}));
