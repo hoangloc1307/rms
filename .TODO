@@ -10,15 +10,14 @@ Cài đặt môi trường lập trình.
 - Cấu hình semantic versioning.
 - Cấu hình github action để tự động build và deploy khi push code.
 - Cấu hình docker để build image và deploy container.
-- Cấu hình prisma để quản lý database.
 - Cấu hình swagger để kiểm tra api.
-- Cấu hình jest để kiểm tra code.
+- Cấu hình jest để kiểm tra code. ✅
 
 Cài đặt bảo mật
 - Cấu hình helmet để bảo vệ các headers của server. ✅
 - Cấu hình cors để bảo vệ các request của client. ✅
 - Cấu hình cookie-parser để parse cookie.
-- Cấu hình express-validator để validate request.
+- Cấu hình zod để validate request. ✅
 - Cấu hình compression để giảm kích thước response.
 
 Cài đặt error handling, logging và monitoring

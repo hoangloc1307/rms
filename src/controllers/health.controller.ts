@@ -1,12 +1,13 @@
+import { sql } from 'drizzle-orm';
 import { Request, Response } from 'express';
 import prettyMs from 'pretty-ms';
 import { env } from '~/configs';
-import { prisma } from '~/database/prisma';
+import { db } from '~/database';
 import { ApiResponse } from '~/utils';
 
 async function checkDatabase(): Promise<string> {
   try {
-    await prisma.$queryRaw`SELECT 1`;
+    await db.execute(sql`SELECT 1`);
     return 'healthy';
   } catch {
     return 'unhealthy';

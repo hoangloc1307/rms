@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import http from 'http';
 import app from '~/app';
 import { env } from '~/configs';
-import { prisma } from '~/database/prisma';
+import { connectDatabase, disconnectDatabase } from '~/database';
 import { initJobs } from '~/jobs';
 import { initMailer } from '~/utils';
 
@@ -11,8 +11,7 @@ const server = http.createServer(app);
 async function startServer() {
   try {
     // Connect db
-    await prisma.$connect();
-    console.log(chalk.green('✅ Prisma connected to database successfully.'));
+    await connectDatabase();
 
     // Server start
     server.listen(env.PORT, () => {
@@ -25,7 +24,7 @@ async function startServer() {
     // Init mailer
     await initMailer();
   } catch (error) {
-    console.error(chalk.red('❌ Failed to start server:', error));
+    console.error(error);
     process.exit(1);
   }
 }
@@ -49,8 +48,7 @@ function gracefulShutdown(signal: string) {
     void (async () => {
       try {
         // Ngắt kết nối db
-        await prisma.$disconnect();
-        console.log(chalk.gray('🔌 Prisma disconnected!'));
+        await disconnectDatabase();
 
         // Xoá timmer khi shutdown thành công
         clearTimeout(forceShutdown);

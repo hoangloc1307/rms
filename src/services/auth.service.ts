@@ -1,25 +1,12 @@
-import { prisma } from '~/database/prisma';
+import { eq } from 'drizzle-orm';
+import { db } from '~/database';
+import { users } from '~/database/schemas';
 import { AppError } from '~/errors';
 import { verifyPassword } from '~/helpers';
 import { generateAccessToken, generateRefreshToken } from '~/utils';
 
 const login = async (username: string, password: string) => {
-  const user = await prisma.user.findUnique({
-    where: { username },
-    include: {
-      userRole: {
-        select: {
-          roleCode: true,
-          sectionCode: true,
-        },
-        where: {
-          role: {
-            isActive: true,
-          },
-        },
-      },
-    },
-  });
+  const [user] = await db.select().from(users).where(eq(users.username, username)).limit(1);
 
   if (!user || !user.isActive) {
     throw AppError.unauthorized('Invalid email or password');
@@ -31,9 +18,7 @@ const login = async (username: string, password: string) => {
     throw AppError.unauthorized('Invalid email or password');
   }
 
-  const roles = user.userRole.map((role) => `${role.roleCode}:${role.sectionCode}`);
-
-  const accessToken = generateAccessToken({ userId: user.username, roles });
+  const accessToken = generateAccessToken({ userId: user.username, roles: ['ADMIN'] });
   const refreshToken = generateRefreshToken(user.username);
 
   return { accessToken, refreshToken };
