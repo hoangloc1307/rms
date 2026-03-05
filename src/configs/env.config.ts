@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import dotenv from 'dotenv';
 import path from 'path';
 import z from 'zod';
-import { envSchema } from '~/schemas';
+import { envSchema } from '~/validations';
 
 // Kiểm tra NODE_ENV có tồn tại không
 // nếu chưa truyền biến để xác định môi trường thì báo lỗi.

@@ -13,8 +13,6 @@ export const envSchema = z.object({
   VERSION: z.string({ error: 'Must be a string.' }).regex(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/, {
     error: 'Must be valid semver (e.g. 1.0.0)',
   }),
-
-  // Log
   LOG_LEVEL: z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal', 'silent'], { error: 'Invalid log level.' }),
 
   // JWT
@@ -63,7 +61,7 @@ export const envSchema = z.object({
     },
   ),
 
-  // Prisma
+  // DATABASE
   DATABASE_URL: z.url({ error: 'Must be a valid URL.' }),
 
   // SMTP

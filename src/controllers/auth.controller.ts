@@ -2,10 +2,10 @@ import { NextFunction, Response } from 'express';
 import ms from 'ms';
 import { env } from '~/configs';
 import { KEYS } from '~/constants';
-import { LoginSchema } from '~/schemas';
 import { authService } from '~/services';
 import { TypedRequest } from '~/types/express';
 import { ApiResponse } from '~/utils';
+import { LoginSchema } from '~/validations';
 
 const login = async (req: TypedRequest<LoginSchema>, res: Response, next: NextFunction) => {
   try {
