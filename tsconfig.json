@@ -38,5 +38,5 @@
   },
 
   // Chỉ định các file và thư mục sẽ được TypeScript xử lý
-  "include": ["src"]
+  "include": ["src", "test"]
 }
