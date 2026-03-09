@@ -6,7 +6,7 @@ import { AppError } from '~/errors';
 import { authService } from '~/services';
 import { TypedRequest } from '~/types/express';
 import { ApiResponse } from '~/utils';
-import { LoginSchema } from '~/validations';
+import { GoogleLoginSchema, LoginSchema } from '~/validations';
 
 const login = async (req: TypedRequest<LoginSchema>, res: Response) => {
   const { username, password } = req.body;
@@ -52,8 +52,25 @@ const logout = (req: Request, res: Response) => {
   ApiResponse.ok(res, 'Logout successfully!');
 };
 
+const googleLogin = async (req: TypedRequest<GoogleLoginSchema>, res: Response) => {
+  const { idToken } = req.body;
+
+  const { accessToken, refreshToken } = await authService.googleLogin(idToken);
+
+  res.cookie(KEYS.REFRESH_TOKEN, refreshToken, {
+    httpOnly: true,
+    secure: env.ENVIRONMENT === KEYS.PRODUCTION,
+    sameSite: 'lax',
+    maxAge: ms('7d'),
+    path: '/api/auth/refresh',
+  });
+
+  ApiResponse.ok(res, 'Login successfully!', { accessToken });
+};
+
 export const authController = {
   login,
   refresh,
   logout,
+  googleLogin,
 };

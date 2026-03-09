@@ -6,3 +6,9 @@ export const loginSchema = z.object({
 });
 
 export type LoginSchema = z.infer<typeof loginSchema>;
+
+export const googleLoginSchema = z.object({
+  idToken: z.string({ error: 'ID token is required' }).min(1, 'ID token is required'),
+});
+
+export type GoogleLoginSchema = z.infer<typeof googleLoginSchema>;

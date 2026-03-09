@@ -74,4 +74,7 @@ export const envSchema = z.object({
   SMTP_USER: z.string({ error: 'Must be a string.' }).optional(),
   SMTP_PASS: z.string({ error: 'Must be a string.' }).optional(),
   EMAIL_FROM: z.email({ error: 'Must be a valid email.' }),
+
+  // GOOGLE OAUTH
+  GOOGLE_CLIENT_ID: z.string({ error: 'Must be a string.' }),
 });
