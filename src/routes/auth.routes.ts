@@ -6,5 +6,7 @@ import { loginSchema } from '~/validations';
 const router = Router();
 
 router.post('/login', payloadValidator(loginSchema), authController.login);
+router.post('/refresh', authController.refresh);
+router.post('/logout', authController.logout);
 
 export default router;

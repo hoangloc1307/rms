@@ -3,14 +3,11 @@ import { db } from '~/database';
 import { users } from '~/database/schemas';
 import { AppError } from '~/errors';
 import { verifyPassword } from '~/helpers';
-import { generateAccessToken, generateRefreshToken } from '~/utils';
+import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '~/utils';
 
 const login = async (username: string, password: string) => {
   const user = await db.query.users.findFirst({
     where: eq(users.username, username),
-    with: {
-      userRoles: true,
-    },
   });
 
   if (!user || !user.isActive) {
@@ -29,6 +26,27 @@ const login = async (username: string, password: string) => {
   return { accessToken, refreshToken };
 };
 
+const refresh = async (refreshToken: string) => {
+  const decodedToken = verifyRefreshToken(refreshToken);
+
+  if (!decodedToken.userId) {
+    throw AppError.unauthorized('Invalid refresh token');
+  }
+
+  const user = await db.query.users.findFirst({
+    where: eq(users.username, decodedToken.userId),
+  });
+
+  if (!user || !user.isActive) {
+    throw AppError.unauthorized('Invalid refresh token');
+  }
+
+  const accessToken = generateAccessToken({ userId: user.username });
+
+  return { accessToken };
+};
+
 export const authService = {
   login,
+  refresh,
 };

@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Application } from 'express';
 import helmet from 'helmet';
@@ -17,6 +18,9 @@ const app: Application = express();
 
   // Parse JSON request bodies.
   app.use(express.json());
+
+  // Parse cookie request bodies.
+  app.use(cookieParser());
 
   // Log requests.
   app.use(httpLogger);

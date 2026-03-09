@@ -4,6 +4,10 @@ import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
 const eslintConfig = defineConfig(
+  {
+    ignores: ['dist', 'node_modules'],
+  },
+
   // Các rules khuyên dùng cho JS
   eslint.configs.recommended,
 
