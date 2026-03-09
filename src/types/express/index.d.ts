@@ -1,9 +1,10 @@
-import { TokenPayload } from '../../utils';
-
 declare global {
   namespace Express {
     interface Request {
-      user?: TokenPayload;
+      user: {
+        userId: string;
+        allowedSections?: string[];
+      };
     }
   }
 }

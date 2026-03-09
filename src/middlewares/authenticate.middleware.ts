@@ -3,6 +3,8 @@ import { AppError } from '~/errors';
 import { verifyAccessToken } from '~/utils';
 
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
+  if (req.url === '/api/auth/login') return next();
+
   const authHeader = req.headers.authorization;
 
   if (!authHeader?.startsWith('Bearer ')) {

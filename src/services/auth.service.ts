@@ -23,9 +23,7 @@ const login = async (username: string, password: string) => {
     throw AppError.unauthorized('Invalid email or password');
   }
 
-  const roles = user.userRoles.map((ur) => `${ur.roleCode}:${ur.sectionCode}`);
-
-  const accessToken = generateAccessToken({ userId: user.username, roles });
+  const accessToken = generateAccessToken({ userId: user.username });
   const refreshToken = generateRefreshToken(user.username);
 
   return { accessToken, refreshToken };

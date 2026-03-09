@@ -2,7 +2,7 @@ import cors from 'cors';
 import express, { Application } from 'express';
 import helmet from 'helmet';
 import { corsConfig, helmetConfig } from '~/configs';
-import { errorHandler, httpLogger } from '~/middlewares';
+import { authenticate, errorHandler, httpLogger } from '~/middlewares';
 import { notFoundHandler } from '~/middlewares/not-found-handler';
 import { routesConfig } from '~/routes';
 
@@ -20,6 +20,9 @@ const app: Application = express();
 
   // Log requests.
   app.use(httpLogger);
+
+  // Authenticate requests.
+  app.use(authenticate);
 
   // Routes
   routesConfig.forEach(({ path, router }) => {

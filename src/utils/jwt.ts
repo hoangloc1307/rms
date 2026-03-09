@@ -3,7 +3,6 @@ import { env } from '~/configs';
 
 export interface TokenPayload {
   userId: string;
-  roles: string[];
 }
 
 export function generateAccessToken(payload: TokenPayload) {
