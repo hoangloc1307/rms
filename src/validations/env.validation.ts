@@ -77,4 +77,10 @@ export const envSchema = z.object({
 
   // GOOGLE OAUTH
   GOOGLE_CLIENT_ID: z.string({ error: 'Must be a string.' }),
+
+  // AWS S3
+  AWS_ACCESS_KEY_ID: z.string({ error: 'Must be a string.' }).min(1, { error: 'Must not be empty.' }),
+  AWS_SECRET_ACCESS_KEY: z.string({ error: 'Must be a string.' }).min(1, { error: 'Must not be empty.' }),
+  AWS_REGION: z.string({ error: 'Must be a string.' }).min(1, { error: 'Must not be empty.' }),
+  AWS_S3_BUCKET: z.string({ error: 'Must be a string.' }).min(1, { error: 'Must not be empty.' }),
 });
