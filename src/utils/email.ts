@@ -1,8 +1,10 @@
 import chalk from 'chalk';
+import { Request } from 'express';
 import { Attachment } from 'nodemailer/lib/mailer';
 import { env } from '~/configs';
 import { getTransporter } from '~/configs/nodemailer.config';
 import { AppError } from '~/errors';
+import { logger } from '~/utils';
 
 interface SendMailProps {
   from?: string;
@@ -15,6 +17,7 @@ interface SendMailProps {
   replyTo?: string | string[];
   attachments?: Attachment[];
   priority?: 'high' | 'normal' | 'low';
+  req?: Request;
 }
 
 export async function sendEmail(props: SendMailProps) {
@@ -26,7 +29,12 @@ export async function sendEmail(props: SendMailProps) {
       ...props,
     });
   } catch (error) {
-    throw AppError.server('Failed to send email', error);
+    logger.error({
+      err: AppError.server('Failed to send email', error),
+      requestId: props.req?.id,
+      method: props.req?.method,
+      url: props.req?.url,
+    });
   }
 }
 

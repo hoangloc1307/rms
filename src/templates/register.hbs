@@ -1,0 +1,114 @@
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>Account Created</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: #111;
+        border: 1px solid #2a2a2a;
+      }
+
+      .header {
+        padding: 20px;
+        background: #000;
+        border-bottom: 3px solid #3fb34f;
+      }
+
+      .logo {
+        font-size: 22px;
+        font-weight: bold;
+        color: #3fb34f;
+      }
+
+      .title {
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        padding: 25px 20px;
+        color: white;
+      }
+
+      .divider {
+        height: 3px;
+        background: linear-gradient(90deg, #6bd14d, #9fe06e);
+      }
+
+      table {
+        margin-top: 20px;
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      td {
+        padding: 14px 20px;
+        border: 1px solid #2a2a2a;
+      }
+
+      td.label {
+        width: 40%;
+        color: #cfcfcf;
+      }
+
+      td.value {
+        font-weight: bold;
+        color: #fff;
+      }
+
+      .footer {
+        padding: 20px;
+        font-size: 16px;
+        color: red;
+        text-align: center;
+      }
+    </style>
+
+  </head>
+
+  <body>
+    <div class='container'>
+
+      <div class='header'>
+        <span class='logo'>Request Management System (RMS)</span>
+      </div>
+
+      <div class='title'>
+        Account Created Successfully
+      </div>
+
+      <div class='divider'></div>
+
+      <table>
+        <tr>
+          <td class='label'>Name</td>
+          <td class='value'>{{name}}</td>
+        </tr>
+        <tr>
+          <td class='label'>Email</td>
+          <td class='value'>{{email}}</td>
+        </tr>
+        <tr>
+          <td class='label'>Username</td>
+          <td class='value'>{{username}}</td>
+        </tr>
+        <tr>
+          <td class='label'>Temporary Password</td>
+          <td class='value'>{{password}}</td>
+        </tr>
+      </table>
+
+      <div class='footer'>
+        This is an automated email from Request Management System.<br />
+        Please change your password after the first login.
+      </div>
+
+    </div>
+  </body>
+</html>

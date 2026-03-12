@@ -8,6 +8,11 @@ export const payloadValidator = (schema: ZodObject) => (req: Request, res: Respo
   if (!result.success) {
     const metadata = result.error.issues.reduce(
       (acc, issue) => {
+        if (issue.path.length === 0) {
+          acc['body'] = issue.message;
+          return acc;
+        }
+
         acc[issue.path.join('.')] = issue.message;
         return acc;
       },

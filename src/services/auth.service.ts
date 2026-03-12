@@ -4,19 +4,54 @@ import { env } from '~/configs';
 import { db } from '~/database';
 import { users } from '~/database/schemas';
 import { AppError } from '~/errors';
-import { verifyPassword } from '~/helpers';
+import { generatePassword, hashPassword, verifyPassword } from '~/helpers';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '~/utils';
+import { LoginSchema, RegisterSchema } from '~/validations';
 
-const login = async (username: string, password: string) => {
+const register = async (payload: RegisterSchema) => {
   const user = await db.query.users.findFirst({
-    where: eq(users.username, username),
+    where: eq(users.username, payload.username),
+  });
+
+  if (user) {
+    throw AppError.conflict('Username already exists');
+  }
+
+  const password = generatePassword();
+
+  const hashedPassword = await hashPassword(password);
+
+  const insertValue = await db
+    .insert(users)
+    .values({
+      username: payload.username,
+      password: hashedPassword,
+      email: payload.email,
+      name: payload.name,
+      createdBy: 'ADMIN',
+    })
+    .returning({ username: users.username, email: users.email, name: users.name });
+
+  const createdUser = insertValue[0];
+
+  return {
+    username: createdUser.username,
+    email: createdUser.email,
+    name: createdUser.name,
+    password,
+  };
+};
+
+const login = async (payload: LoginSchema) => {
+  const user = await db.query.users.findFirst({
+    where: eq(users.username, payload.username),
   });
 
   if (!user || !user.isActive) {
     throw AppError.unauthorized('Invalid email or password');
   }
 
-  const isPasswordValid = await verifyPassword(password, user.password);
+  const isPasswordValid = await verifyPassword(payload.password, user.password);
 
   if (!isPasswordValid) {
     throw AppError.unauthorized('Invalid email or password');
@@ -96,6 +131,7 @@ const googleLogin = async (idToken: string) => {
 };
 
 export const authService = {
+  register,
   login,
   refresh,
   googleLogin,

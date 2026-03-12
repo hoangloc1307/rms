@@ -5,13 +5,35 @@ import { KEYS } from '~/constants';
 import { AppError } from '~/errors';
 import { authService } from '~/services';
 import { TypedRequest } from '~/types/express';
-import { ApiResponse } from '~/utils';
-import { GoogleLoginSchema, LoginSchema } from '~/validations';
+import { ApiResponse, renderTemplate, sendEmail } from '~/utils';
+import { GoogleLoginSchema, LoginSchema, RegisterSchema } from '~/validations';
+
+const register = async (req: TypedRequest<RegisterSchema>, res: Response) => {
+  const { username, email, name } = req.body;
+
+  const createdUser = await authService.register({ username, email, name });
+
+  const html = renderTemplate('register', {
+    name: createdUser.name,
+    email: createdUser.email,
+    username: createdUser.username,
+    password: createdUser.password,
+  });
+
+  await sendEmail({
+    subject: 'Create account successfully!',
+    to: [createdUser.email!],
+    html,
+    req: req as Request,
+  });
+
+  ApiResponse.ok(res, 'Register successfully!');
+};
 
 const login = async (req: TypedRequest<LoginSchema>, res: Response) => {
   const { username, password } = req.body;
 
-  const { accessToken, refreshToken } = await authService.login(username, password);
+  const { accessToken, refreshToken } = await authService.login({ username, password });
 
   res.cookie(KEYS.REFRESH_TOKEN, refreshToken, {
     httpOnly: true,
@@ -69,6 +91,7 @@ const googleLogin = async (req: TypedRequest<GoogleLoginSchema>, res: Response) 
 };
 
 export const authController = {
+  register,
   login,
   refresh,
   logout,
