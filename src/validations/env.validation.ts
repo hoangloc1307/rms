@@ -83,4 +83,12 @@ export const envSchema = z.object({
   AWS_SECRET_ACCESS_KEY: z.string({ error: 'Must be a string.' }).min(1, { error: 'Must not be empty.' }),
   AWS_REGION: z.string({ error: 'Must be a string.' }).min(1, { error: 'Must not be empty.' }),
   AWS_S3_BUCKET: z.string({ error: 'Must be a string.' }).min(1, { error: 'Must not be empty.' }),
+
+  // REDIS
+  REDIS_HOST: z.string({ error: 'Must be a string.' }).min(1, { error: 'Must not be empty.' }),
+  REDIS_PORT: z.coerce
+    .number({ error: 'Must be a number.' })
+    .int({ error: 'Must be an integer.' })
+    .min(1, { error: 'Must be greater than 0.' })
+    .max(65535, { error: 'Must be less than 65536.' }),
 });
