@@ -5,7 +5,7 @@ import { env, getTransporter } from '~/configs';
 import { AppError } from '~/errors';
 import { logger } from '~/utils';
 
-interface SendMailProps {
+export interface SendMailProps {
   from?: string;
   to: string | string[];
   cc?: string | string[];
