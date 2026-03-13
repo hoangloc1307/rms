@@ -66,6 +66,12 @@ const refresh = async (req: Request, res: Response) => {
 };
 
 const logout = (req: Request, res: Response) => {
+  const refreshToken = req.cookies[KEYS.REFRESH_TOKEN] as string;
+
+  if (!refreshToken) {
+    throw AppError.unauthorized('Refresh token not found');
+  }
+
   res.clearCookie(KEYS.REFRESH_TOKEN, {
     path: '/api/auth/refresh',
   });
