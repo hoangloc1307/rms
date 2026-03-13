@@ -1,8 +1,7 @@
 import chalk from 'chalk';
 import { Request } from 'express';
 import { Attachment } from 'nodemailer/lib/mailer';
-import { env } from '~/configs';
-import { getTransporter } from '~/configs/nodemailer.config';
+import { env, getTransporter } from '~/configs';
 import { AppError } from '~/errors';
 import { logger } from '~/utils';
 
@@ -20,7 +19,7 @@ interface SendMailProps {
   req?: Request;
 }
 
-export async function sendEmail(props: SendMailProps) {
+async function sendEmail(props: SendMailProps) {
   const transporter = getTransporter();
 
   try {
@@ -38,7 +37,7 @@ export async function sendEmail(props: SendMailProps) {
   }
 }
 
-export async function initMailer() {
+async function verifyConnection() {
   const transporter = getTransporter();
 
   try {
@@ -48,3 +47,8 @@ export async function initMailer() {
     console.warn(chalk.yellow('⚠️  Mail server unavailable, emails may fail'), err);
   }
 }
+
+export const mailService = {
+  verifyConnection,
+  sendEmail,
+};

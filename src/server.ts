@@ -4,7 +4,7 @@ import app from '~/app';
 import { env } from '~/configs';
 import { connectDatabase, disconnectDatabase } from '~/database';
 import { initJobs } from '~/jobs';
-import { initMailer } from '~/utils';
+import { mailService } from '~/services';
 
 const server = http.createServer(app);
 
@@ -22,7 +22,7 @@ async function startServer() {
     await initJobs();
 
     // Init mailer
-    await initMailer();
+    await mailService.verifyConnection();
   } catch (error) {
     console.error(error);
     process.exit(1);

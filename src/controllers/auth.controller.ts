@@ -3,9 +3,9 @@ import ms from 'ms';
 import { env } from '~/configs';
 import { KEYS } from '~/constants';
 import { AppError } from '~/errors';
-import { authService } from '~/services';
+import { authService, mailService } from '~/services';
 import { TypedRequest } from '~/types/express';
-import { ApiResponse, renderTemplate, sendEmail } from '~/utils';
+import { ApiResponse, renderTemplate } from '~/utils';
 import { GoogleLoginSchema, LoginSchema, RegisterSchema } from '~/validations';
 
 const register = async (req: TypedRequest<RegisterSchema>, res: Response) => {
@@ -20,7 +20,7 @@ const register = async (req: TypedRequest<RegisterSchema>, res: Response) => {
     password: createdUser.password,
   });
 
-  await sendEmail({
+  await mailService.sendEmail({
     subject: 'Create account successfully!',
     to: [createdUser.email!],
     html,
