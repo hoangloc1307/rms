@@ -22,5 +22,6 @@ new Worker(
       ...redisConfig,
       maxRetriesPerRequest: null,
     },
+    concurrency: 5,
   },
 );

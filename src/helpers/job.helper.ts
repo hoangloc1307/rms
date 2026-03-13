@@ -1,6 +1,14 @@
 import { jobQueue } from '~/queues';
 import { JobDataMap } from '~/workers/worker';
 
-export function addJob<K extends keyof JobDataMap>(name: K, data: JobDataMap[K]) {
-  return jobQueue.add(name, data);
+export function addSendMailJob(data: JobDataMap['sendEmail']) {
+  return jobQueue.add('sendEmail', data, {
+    removeOnComplete: true,
+    removeOnFail: 50,
+    attempts: 3,
+    backoff: {
+      type: 'exponential',
+      delay: 5000,
+    },
+  });
 }

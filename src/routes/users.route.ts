@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import { addJob } from '~/helpers';
+import { addSendMailJob } from '~/helpers';
 import { authorize } from '~/middlewares';
 import { ApiResponse } from '~/utils';
 
 const router = Router();
 
 router.post('/', authorize('REQUEST', 'CREATE'), async (_req, res) => {
-  await addJob('sendEmail', {
+  await addSendMailJob({
     to: 'tran.nguyen.hoang.loc@vnn.nokgrp.com',
     subject: 'Test',
     text: 'test',

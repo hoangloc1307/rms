@@ -3,7 +3,7 @@ import { Request } from 'express';
 import { Attachment } from 'nodemailer/lib/mailer';
 import { env, getTransporter } from '~/configs';
 import { AppError } from '~/errors';
-import { logger } from '~/utils';
+import { logger, renderTemplate } from '~/utils';
 
 export interface SendMailProps {
   from?: string;
@@ -16,6 +16,8 @@ export interface SendMailProps {
   replyTo?: string | string[];
   attachments?: Attachment[];
   priority?: 'high' | 'normal' | 'low';
+  template?: string;
+  data?: Record<string, unknown>;
   req?: Request;
 }
 
@@ -23,6 +25,11 @@ async function sendEmail(props: SendMailProps) {
   const transporter = getTransporter();
 
   try {
+    if (props.template) {
+      const template = renderTemplate(props.template, props.data);
+      props.html = template;
+    }
+
     await transporter.sendMail({
       from: props.from || `RMS <${env.EMAIL_FROM}>`,
       ...props,
@@ -34,6 +41,7 @@ async function sendEmail(props: SendMailProps) {
       method: props.req?.method,
       url: props.req?.url,
     });
+    throw error;
   }
 }
 

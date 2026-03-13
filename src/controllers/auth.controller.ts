@@ -3,9 +3,10 @@ import ms from 'ms';
 import { env } from '~/configs';
 import { KEYS } from '~/constants';
 import { AppError } from '~/errors';
-import { authService, mailService } from '~/services';
+import { addSendMailJob } from '~/helpers';
+import { authService } from '~/services';
 import { TypedRequest } from '~/types/express';
-import { ApiResponse, renderTemplate } from '~/utils';
+import { ApiResponse } from '~/utils';
 import { GoogleLoginSchema, LoginSchema, RegisterSchema } from '~/validations';
 
 const register = async (req: TypedRequest<RegisterSchema>, res: Response) => {
@@ -13,18 +14,16 @@ const register = async (req: TypedRequest<RegisterSchema>, res: Response) => {
 
   const createdUser = await authService.register({ username, email, name });
 
-  const html = renderTemplate('register', {
-    name: createdUser.name,
-    email: createdUser.email,
-    username: createdUser.username,
-    password: createdUser.password,
-  });
-
-  await mailService.sendEmail({
+  await addSendMailJob({
     subject: 'Create account successfully!',
     to: [createdUser.email!],
-    html,
-    req: req as Request,
+    template: 'register',
+    data: {
+      name: createdUser.name,
+      email: createdUser.email,
+      username: createdUser.username,
+      password: createdUser.password,
+    },
   });
 
   ApiResponse.ok(res, 'Register successfully!');
