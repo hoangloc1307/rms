@@ -7,11 +7,12 @@ import userRoutes from '~/routes/users.route';
 interface RoutesConfig {
   path: string;
   router: Router;
+  isPublic?: boolean;
 }
 
 export const routesConfig: RoutesConfig[] = [
-  { path: '/health', router: healthRoutes },
-  { path: '/auth', router: authRoutes },
+  { path: '/health', router: healthRoutes, isPublic: true },
+  { path: '/auth', router: authRoutes, isPublic: true },
   { path: '/users', router: userRoutes },
   { path: '/upload', router: uploadRoutes },
 ];

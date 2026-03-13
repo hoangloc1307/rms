@@ -25,12 +25,13 @@ const app: Application = express();
   // Log requests.
   app.use(httpLogger);
 
-  // Authenticate requests.
-  app.use(authenticate);
-
   // Routes
-  routesConfig.forEach(({ path, router }) => {
-    app.use(`/api${path}`, router);
+  routesConfig.forEach(({ path, router, isPublic }) => {
+    if (isPublic) {
+      app.use(`/api${path}`, router);
+    } else {
+      app.use(`/api${path}`, authenticate, router);
+    }
   });
 
   // Not found handler
