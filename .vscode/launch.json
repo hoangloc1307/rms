@@ -2,11 +2,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Attach to Nodemon",
+      "name": "Attach API in Docker",
       "type": "node",
       "request": "attach",
+      "address": "localhost",
       "port": 9229,
       "restart": true,
+      "localRoot": "${workspaceFolder}",
+      "remoteRoot": "/app",
       "skipFiles": ["<node_internals>/**"]
     }
   ]

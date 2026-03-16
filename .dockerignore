@@ -1,0 +1,10 @@
+node_modules
+dist
+.git
+.husky
+.vscode
+logs
+coverage
+npm-debug.log
+Dockerfile*
+docker-compose*

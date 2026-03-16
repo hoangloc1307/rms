@@ -8,7 +8,7 @@
   },
   "type": "module",
   "scripts": {
-    "dev:api": "cross-env NODE_ENV=development tsx watch --inspect=9229 src/server.ts",
+    "dev:api": "cross-env NODE_ENV=development tsx watch --inspect=0.0.0.0:9229 src/server.ts",
     "clean": "rimraf dist",
     "prebuild": "npm run clean",
     "build": "tsc && tsc-alias",
@@ -20,6 +20,7 @@
     "start": "cross-env NODE_ENV=production node dist/server.js",
     "prepare": "husky",
     "commit": "cz",
+    "db:migrate": "drizzle-kit migrate",
     "dev:db:generate": "dotenv -e .env.development -- drizzle-kit generate",
     "dev:db:migrate": "dotenv -e .env.development -- drizzle-kit migrate",
     "dev:db:studio": "dotenv -e .env.development -- drizzle-kit studio",
