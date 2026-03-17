@@ -12,3 +12,11 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 export function generatePassword(length = 12) {
   return crypto.randomBytes(length).toString('base64url').slice(0, length);
 }
+
+export function hashResetToken(token: string): string {
+  return crypto.createHash('sha256').update(token).digest('hex');
+}
+
+export function verifyResetTokenHash(token: string, hash: string): boolean {
+  return crypto.createHash('sha256').update(token).digest('hex') === hash;
+}

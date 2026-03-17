@@ -32,3 +32,24 @@ export const googleLoginSchema = z.object({
 });
 
 export type GoogleLoginSchemaBody = z.infer<typeof googleLoginSchema>['body'];
+
+// ==================== FORGOT PASSWORD ====================
+
+export const forgotPasswordSchema = z.object({
+  body: z.object({
+    email: z.email({ error: 'Email is required' }),
+  }),
+});
+
+export type ForgotPasswordSchemaBody = z.infer<typeof forgotPasswordSchema>['body'];
+
+// ==================== RESET PASSWORD ====================
+
+export const resetPasswordSchema = z.object({
+  body: z.object({
+    token: z.string({ error: 'Token is required' }).min(1, 'Token is required'),
+    newPassword: z.string({ error: 'New password is required' }).min(8, 'Password must be at least 8 characters'),
+  }),
+});
+
+export type ResetPasswordSchemaBody = z.infer<typeof resetPasswordSchema>['body'];

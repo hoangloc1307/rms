@@ -7,7 +7,13 @@ import { addSendMailJob } from '~/helpers';
 import { authService } from '~/services';
 import { TypedRequest } from '~/types/express';
 import { ApiResponse } from '~/utils';
-import { GoogleLoginSchemaBody, LoginSchemaBody, RegisterSchemaBody } from '~/validations';
+import {
+  ForgotPasswordSchemaBody,
+  GoogleLoginSchemaBody,
+  LoginSchemaBody,
+  RegisterSchemaBody,
+  ResetPasswordSchemaBody,
+} from '~/validations';
 
 const register = async (req: TypedRequest<RegisterSchemaBody>, res: Response) => {
   const { username, email, name } = req.body;
@@ -95,10 +101,35 @@ const googleLogin = async (req: TypedRequest<GoogleLoginSchemaBody>, res: Respon
   ApiResponse.ok(res, 'Login successfully!', { accessToken });
 };
 
+const forgotPassword = async (req: TypedRequest<ForgotPasswordSchemaBody>, res: Response) => {
+  const { email } = req.body;
+
+  const { token, name, email: userEmail } = await authService.forgotPassword({ email });
+
+  await addSendMailJob({
+    subject: 'Password Reset Request',
+    to: [userEmail!],
+    template: 'forgot-password',
+    data: { name, token },
+  });
+
+  ApiResponse.ok(res, 'Password reset instructions have been sent to your email.');
+};
+
+const resetPassword = async (req: TypedRequest<ResetPasswordSchemaBody>, res: Response) => {
+  const { token, newPassword } = req.body;
+
+  await authService.resetPassword({ token, newPassword });
+
+  ApiResponse.ok(res, 'Password has been reset successfully.');
+};
+
 export const authController = {
   register,
   login,
   refresh,
   logout,
   googleLogin,
+  forgotPassword,
+  resetPassword,
 };

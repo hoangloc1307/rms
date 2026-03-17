@@ -4,9 +4,22 @@ import { env } from '~/configs';
 import { db } from '~/database';
 import { users } from '~/database/schemas';
 import { AppError } from '~/errors';
-import { generatePassword, hashPassword, verifyPassword } from '~/helpers';
-import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '~/utils';
-import { GoogleLoginSchemaBody, LoginSchemaBody, RegisterSchemaBody } from '~/validations';
+import { generatePassword, hashPassword, hashResetToken, verifyPassword, verifyResetTokenHash } from '~/helpers';
+import { cacheService } from '~/services/cache.service';
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  generateResetToken,
+  verifyRefreshToken,
+  verifyResetToken,
+} from '~/utils';
+import {
+  ForgotPasswordSchemaBody,
+  GoogleLoginSchemaBody,
+  LoginSchemaBody,
+  RegisterSchemaBody,
+  ResetPasswordSchemaBody,
+} from '~/validations';
 
 const register = async (payload: RegisterSchemaBody) => {
   const user = await db.query.users.findFirst({
@@ -48,13 +61,13 @@ const login = async (payload: LoginSchemaBody) => {
   });
 
   if (!user || !user.isActive) {
-    throw AppError.unauthorized('Invalid email or password');
+    throw AppError.unauthorized('Invalid username or password');
   }
 
   const isPasswordValid = await verifyPassword(payload.password, user.password);
 
   if (!isPasswordValid) {
-    throw AppError.unauthorized('Invalid email or password');
+    throw AppError.unauthorized('Invalid username or password');
   }
 
   const accessToken = generateAccessToken({ userId: user.username });
@@ -130,9 +143,70 @@ const googleLogin = async (payload: GoogleLoginSchemaBody) => {
   return { accessToken, refreshToken };
 };
 
+const forgotPassword = async (payload: ForgotPasswordSchemaBody) => {
+  const user = await db.query.users.findFirst({
+    where: eq(users.email, payload.email),
+  });
+
+  if (!user || !user.isActive) {
+    throw AppError.notFound('No account associated with this email');
+  }
+
+  const token = generateResetToken(user.username);
+
+  const hashToken = hashResetToken(token);
+
+  await cacheService.set(`reset_pwd:${user.username}`, hashToken, 5 * 60);
+
+  return {
+    token,
+    name: user.name,
+    email: user.email,
+  };
+};
+
+const resetPassword = async (payload: ResetPasswordSchemaBody) => {
+  let decoded: { userId: string; type: string };
+
+  try {
+    decoded = verifyResetToken(payload.token);
+  } catch {
+    throw AppError.unauthorized('Invalid or expired reset token');
+  }
+
+  if (decoded.type !== 'reset') {
+    throw AppError.unauthorized('Invalid reset token');
+  }
+
+  const storedToken = await cacheService.get(`reset_pwd:${decoded.userId}`);
+
+  if (!storedToken || !verifyResetTokenHash(payload.token, storedToken as string)) {
+    throw AppError.unauthorized('Reset token has already been used or expired');
+  }
+
+  const user = await db.query.users.findFirst({
+    where: eq(users.username, decoded.userId),
+  });
+
+  if (!user || !user.isActive) {
+    throw AppError.unauthorized('User not found');
+  }
+
+  const hashedPassword = await hashPassword(payload.newPassword);
+
+  await db
+    .update(users)
+    .set({ password: hashedPassword, updatedAt: new Date(), updatedBy: user.username })
+    .where(eq(users.username, user.username));
+
+  await cacheService.del(`reset_pwd:${user.username}`);
+};
+
 export const authService = {
   register,
   login,
   refresh,
   googleLogin,
+  forgotPassword,
+  resetPassword,
 };
