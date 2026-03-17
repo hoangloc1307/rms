@@ -6,9 +6,9 @@ import { users } from '~/database/schemas';
 import { AppError } from '~/errors';
 import { generatePassword, hashPassword, verifyPassword } from '~/helpers';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from '~/utils';
-import { LoginSchema, RegisterSchema } from '~/validations';
+import { GoogleLoginSchemaBody, LoginSchemaBody, RegisterSchemaBody } from '~/validations';
 
-const register = async (payload: RegisterSchema) => {
+const register = async (payload: RegisterSchemaBody) => {
   const user = await db.query.users.findFirst({
     where: eq(users.username, payload.username),
   });
@@ -42,7 +42,7 @@ const register = async (payload: RegisterSchema) => {
   };
 };
 
-const login = async (payload: LoginSchema) => {
+const login = async (payload: LoginSchemaBody) => {
   const user = await db.query.users.findFirst({
     where: eq(users.username, payload.username),
   });
@@ -83,22 +83,22 @@ const refresh = async (refreshToken: string) => {
   return { accessToken };
 };
 
-const googleLogin = async (idToken: string) => {
+const googleLogin = async (payload: GoogleLoginSchemaBody) => {
   const client = new OAuth2Client(env.GOOGLE_CLIENT_ID);
 
   const ticket = await client.verifyIdToken({
-    idToken,
+    idToken: payload.idToken,
     audience: env.GOOGLE_CLIENT_ID,
   });
 
-  const payload = ticket.getPayload();
+  const payloadData = ticket.getPayload();
 
-  if (!payload) {
+  if (!payloadData) {
     throw AppError.unauthorized('Invalid Google token');
   }
 
   const user = await db.query.users.findFirst({
-    where: eq(users.email, payload.email!),
+    where: eq(users.email, payloadData.email!),
   });
 
   // Nếu không có user thì tạo user
@@ -108,8 +108,8 @@ const googleLogin = async (idToken: string) => {
       .values({
         username: '12345678',
         password: '12345678',
-        email: payload.email,
-        name: payload.name,
+        email: payloadData.email,
+        name: payloadData.name,
         createdBy: 'SYSTEM',
       })
       .returning({ username: users.username });

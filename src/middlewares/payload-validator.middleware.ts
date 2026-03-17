@@ -3,7 +3,11 @@ import { ZodObject } from 'zod';
 import { AppError } from '~/errors';
 
 export const payloadValidator = (schema: ZodObject) => (req: Request, res: Response, next: NextFunction) => {
-  const result = schema.safeParse(req.body);
+  const result = schema.safeParse({
+    body: req.body as unknown,
+    query: req.query,
+    params: req.params,
+  });
 
   if (!result.success) {
     const metadata = result.error.issues.reduce(
@@ -22,6 +26,7 @@ export const payloadValidator = (schema: ZodObject) => (req: Request, res: Respo
     next(AppError.badRequest('Validation Error', metadata));
   }
 
-  req.body = result.data;
+  req.body = result.data?.body;
+
   next();
 };

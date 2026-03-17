@@ -7,9 +7,9 @@ import { addSendMailJob } from '~/helpers';
 import { authService } from '~/services';
 import { TypedRequest } from '~/types/express';
 import { ApiResponse } from '~/utils';
-import { GoogleLoginSchema, LoginSchema, RegisterSchema } from '~/validations';
+import { GoogleLoginSchemaBody, LoginSchemaBody, RegisterSchemaBody } from '~/validations';
 
-const register = async (req: TypedRequest<RegisterSchema>, res: Response) => {
+const register = async (req: TypedRequest<RegisterSchemaBody>, res: Response) => {
   const { username, email, name } = req.body;
 
   const createdUser = await authService.register({ username, email, name });
@@ -29,7 +29,7 @@ const register = async (req: TypedRequest<RegisterSchema>, res: Response) => {
   ApiResponse.ok(res, 'Register successfully!');
 };
 
-const login = async (req: TypedRequest<LoginSchema>, res: Response) => {
+const login = async (req: TypedRequest<LoginSchemaBody>, res: Response) => {
   const { username, password } = req.body;
 
   const { accessToken, refreshToken } = await authService.login({ username, password });
@@ -79,10 +79,10 @@ const logout = (req: Request, res: Response) => {
   ApiResponse.ok(res, 'Logout successfully!');
 };
 
-const googleLogin = async (req: TypedRequest<GoogleLoginSchema>, res: Response) => {
+const googleLogin = async (req: TypedRequest<GoogleLoginSchemaBody>, res: Response) => {
   const { idToken } = req.body;
 
-  const { accessToken, refreshToken } = await authService.googleLogin(idToken);
+  const { accessToken, refreshToken } = await authService.googleLogin({ idToken });
 
   res.cookie(KEYS.REFRESH_TOKEN, refreshToken, {
     httpOnly: true,

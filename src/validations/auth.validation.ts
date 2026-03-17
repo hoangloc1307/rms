@@ -1,22 +1,34 @@
 import { z } from 'zod';
 
+// ==================== REGISTER ====================
+
 export const registerSchema = z.object({
-  username: z.string({ error: 'Username is required' }).length(8, 'Username must be 8 characters').trim(),
-  email: z.email({ error: 'Email is required' }),
-  name: z.string({ error: 'Name is required' }).min(1, 'Name is required').trim(),
+  body: z.object({
+    username: z.string({ error: 'Username is required' }).length(8, 'Username must be 8 characters').trim(),
+    email: z.email({ error: 'Email is required' }),
+    name: z.string({ error: 'Name is required' }).min(1, 'Name is required').trim(),
+  }),
 });
 
-export type RegisterSchema = z.infer<typeof registerSchema>;
+export type RegisterSchemaBody = z.infer<typeof registerSchema>['body'];
+
+// ==================== LOGIN ====================
 
 export const loginSchema = z.object({
-  username: z.string({ error: 'Username is required' }).min(1, 'Username is required').trim(),
-  password: z.string({ error: 'Password is required' }).min(8, 'Password must be at least 8 characters'),
+  body: z.object({
+    username: z.string({ error: 'Username is required' }).min(1, 'Username is required').trim(),
+    password: z.string({ error: 'Password is required' }).min(8, 'Password must be at least 8 characters'),
+  }),
 });
 
-export type LoginSchema = z.infer<typeof loginSchema>;
+export type LoginSchemaBody = z.infer<typeof loginSchema>['body'];
+
+// ==================== GOOGLE LOGIN ====================
 
 export const googleLoginSchema = z.object({
-  idToken: z.string({ error: 'ID token is required' }).min(1, 'ID token is required'),
+  body: z.object({
+    idToken: z.string({ error: 'ID token is required' }).min(1, 'ID token is required'),
+  }),
 });
 
-export type GoogleLoginSchema = z.infer<typeof googleLoginSchema>;
+export type GoogleLoginSchemaBody = z.infer<typeof googleLoginSchema>['body'];

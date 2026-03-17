@@ -2,7 +2,7 @@ import ms, { StringValue } from 'ms';
 import z from 'zod';
 
 export const envSchema = z.object({
-  // App
+  // ==================== APP ====================
   ENVIRONMENT: z.enum(['development', 'production'], { error: 'Invalid environment.' }),
   PORT: z.coerce
     .number({ error: 'Must be a number.' })
@@ -15,7 +15,7 @@ export const envSchema = z.object({
   }),
   LOG_LEVEL: z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal', 'silent'], { error: 'Invalid log level.' }),
 
-  // JWT
+  // ==================== JWT ====================
   JWT_ACCESS_SECRET: z
     .string({
       error: 'Must be a string',
@@ -61,10 +61,10 @@ export const envSchema = z.object({
     },
   ),
 
-  // DATABASE
+  // ==================== DATABASE ====================
   DATABASE_URL: z.url({ error: 'Must be a valid URL.' }),
 
-  // SMTP
+  // ==================== SMTP ====================
   SMTP_HOST: z.string({ error: 'Must be a string.' }).min(1, { error: 'Must not be empty.' }),
   SMTP_PORT: z.coerce
     .number({ error: 'Must be a number.' })
@@ -75,16 +75,16 @@ export const envSchema = z.object({
   SMTP_PASS: z.string({ error: 'Must be a string.' }).optional(),
   EMAIL_FROM: z.email({ error: 'Must be a valid email.' }),
 
-  // GOOGLE OAUTH
+  // ==================== GOOGLE OAUTH ====================
   GOOGLE_CLIENT_ID: z.string({ error: 'Must be a string.' }),
 
-  // AWS S3
+  // ==================== AWS S3 ====================
   AWS_ACCESS_KEY_ID: z.string({ error: 'Must be a string.' }).min(1, { error: 'Must not be empty.' }),
   AWS_SECRET_ACCESS_KEY: z.string({ error: 'Must be a string.' }).min(1, { error: 'Must not be empty.' }),
   AWS_REGION: z.string({ error: 'Must be a string.' }).min(1, { error: 'Must not be empty.' }),
   AWS_S3_BUCKET: z.string({ error: 'Must be a string.' }).min(1, { error: 'Must not be empty.' }),
 
-  // REDIS
+  // ==================== REDIS ====================
   REDIS_HOST: z.string({ error: 'Must be a string.' }).min(1, { error: 'Must not be empty.' }),
   REDIS_PORT: z.coerce
     .number({ error: 'Must be a number.' })

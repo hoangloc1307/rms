@@ -1,17 +1,28 @@
-import { Router } from 'express';
-import { addSendMailJob } from '~/helpers';
-import { authorize } from '~/middlewares';
+import { Response, Router } from 'express';
+import z from 'zod';
+import { payloadValidator } from '~/middlewares';
+import { TypedRequest } from '~/types/express';
 import { ApiResponse } from '~/utils';
 
 const router = Router();
 
-router.post('/', authorize('REQUEST', 'CREATE'), async (_req, res) => {
-  await addSendMailJob({
-    to: 'tran.nguyen.hoang.loc@vnn.nokgrp.com',
-    subject: 'Test',
-    text: 'test',
-  });
-  ApiResponse.ok(res, 'Create users');
-});
+router.post(
+  '/',
+  payloadValidator(
+    z.object({
+      query: z.object({
+        name: z.string().min(1, 'Name is required').trim(),
+      }),
+      body: z.object({
+        lastName: z.string().min(1, 'Last name is required'),
+      }),
+    }),
+  ),
+  (req: TypedRequest<{ lastName: string }, object, { name: string }>, res: Response) => {
+    const { name } = req.query;
+    const { lastName } = req.body;
+    ApiResponse.ok(res, `Test create user 4 ${name} ${lastName}`);
+  },
+);
 
 export default router;
