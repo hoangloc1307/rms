@@ -1,10 +1,20 @@
 import { Router } from 'express';
 import { itemMasterController } from '~/controllers';
-import { authorize, payloadValidator } from '~/middlewares';
-import { paginationSchema } from '~/validations';
+import { requestValidator } from '~/middlewares';
+import {
+  createItemMasterSchema,
+  deleteItemMasterSchema,
+  getItemMasterDetailSchema,
+  paginationSchema,
+  updateItemMasterSchema,
+} from '~/validations';
 
 const router = Router();
 
-router.get('/', authorize('ITEM_MASTER', 'READ'), payloadValidator(paginationSchema), itemMasterController.getAll);
+router.get('/', requestValidator(paginationSchema), itemMasterController.getAll);
+router.get('/:itemCode', requestValidator(getItemMasterDetailSchema), itemMasterController.getItemMasterDetail);
+router.post('/', requestValidator(createItemMasterSchema), itemMasterController.createItemMaster);
+router.delete('/:itemCode', requestValidator(deleteItemMasterSchema), itemMasterController.deleteItemMaster);
+router.put('/:itemCode', requestValidator(updateItemMasterSchema), itemMasterController.updateItemMaster);
 
 export default router;

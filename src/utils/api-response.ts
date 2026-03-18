@@ -40,10 +40,10 @@ export class ApiResponse<T = unknown> {
     });
   }
 
-  static Success<T>(res: Response, message: string, data?: T, httpStatus: HttpStatus = HTTP_STATUS.OK): Response {
+  static Success<T>(res: Response, message?: string, data?: T, httpStatus: HttpStatus = HTTP_STATUS.OK): Response {
     return new ApiResponse<T>({
       success: true,
-      message,
+      message: message || 'Success',
       data,
       httpStatus,
     }).send(res);
@@ -69,6 +69,10 @@ export class ApiResponse<T = unknown> {
 
   static created<T>(res: Response, message = 'Created', data?: T) {
     return ApiResponse.Success(res, message, data, HTTP_STATUS.CREATED);
+  }
+
+  static deleted(res: Response) {
+    return ApiResponse.Success(res, '', null, HTTP_STATUS.NO_CONTENT);
   }
 
   static paginated<T>(res: Response, data: T, page: number, limit: number, totalItems: number, message = 'OK') {

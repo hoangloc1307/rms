@@ -5,7 +5,6 @@ import { KEYS } from '~/constants';
 import { AppError } from '~/errors';
 import { addSendMailJob } from '~/helpers';
 import { authService } from '~/services';
-import { TypedRequest } from '~/types/express';
 import { ApiResponse } from '~/utils';
 import {
   ForgotPasswordSchemaBody,
@@ -15,8 +14,10 @@ import {
   ResetPasswordSchemaBody,
 } from '~/validations';
 
-const register = async (req: TypedRequest<RegisterSchemaBody>, res: Response) => {
-  const { username, email, name } = req.body;
+// ==================== REGISTER ====================
+
+const register = async (req: Request, res: Response) => {
+  const { username, email, name } = req.validatedData?.body as RegisterSchemaBody;
 
   const createdUser = await authService.register({ username, email, name });
 
@@ -35,8 +36,10 @@ const register = async (req: TypedRequest<RegisterSchemaBody>, res: Response) =>
   ApiResponse.ok(res, 'Register successfully!');
 };
 
-const login = async (req: TypedRequest<LoginSchemaBody>, res: Response) => {
-  const { username, password } = req.body;
+// ==================== LOGIN ====================
+
+const login = async (req: Request, res: Response) => {
+  const { username, password } = req.validatedData?.body as LoginSchemaBody;
 
   const { accessToken, refreshToken } = await authService.login({ username, password });
 
@@ -50,6 +53,8 @@ const login = async (req: TypedRequest<LoginSchemaBody>, res: Response) => {
 
   ApiResponse.ok(res, 'Login successfully!', { accessToken });
 };
+
+// ==================== REFRESH TOKEN ====================
 
 const refresh = async (req: Request, res: Response) => {
   const refreshToken = req.cookies[KEYS.REFRESH_TOKEN] as string;
@@ -71,6 +76,8 @@ const refresh = async (req: Request, res: Response) => {
   ApiResponse.ok(res, 'Refresh successfully!', { accessToken });
 };
 
+// ==================== LOGOUT ====================
+
 const logout = (req: Request, res: Response) => {
   const refreshToken = req.cookies[KEYS.REFRESH_TOKEN] as string;
 
@@ -85,10 +92,12 @@ const logout = (req: Request, res: Response) => {
   ApiResponse.ok(res, 'Logout successfully!');
 };
 
-const googleLogin = async (req: TypedRequest<GoogleLoginSchemaBody>, res: Response) => {
-  const { idToken } = req.body;
+// ==================== GOOGLE LOGIN ====================
 
-  const { accessToken, refreshToken } = await authService.googleLogin({ idToken });
+const googleLogin = async (req: Request, res: Response) => {
+  const { idToken } = req.validatedData?.body as GoogleLoginSchemaBody;
+
+  const { accessToken, refreshToken } = await authService.googleLogin(idToken);
 
   res.cookie(KEYS.REFRESH_TOKEN, refreshToken, {
     httpOnly: true,
@@ -101,10 +110,12 @@ const googleLogin = async (req: TypedRequest<GoogleLoginSchemaBody>, res: Respon
   ApiResponse.ok(res, 'Login successfully!', { accessToken });
 };
 
-const forgotPassword = async (req: TypedRequest<ForgotPasswordSchemaBody>, res: Response) => {
-  const { email } = req.body;
+// ==================== FORGOT PASSWORD ====================
 
-  const { token, name, email: userEmail } = await authService.forgotPassword({ email });
+const forgotPassword = async (req: Request, res: Response) => {
+  const { email } = req.validatedData?.body as ForgotPasswordSchemaBody;
+
+  const { token, name, email: userEmail } = await authService.forgotPassword(email);
 
   await addSendMailJob({
     subject: 'Password Reset Request',
@@ -116,13 +127,17 @@ const forgotPassword = async (req: TypedRequest<ForgotPasswordSchemaBody>, res: 
   ApiResponse.ok(res, 'Password reset instructions have been sent to your email.');
 };
 
-const resetPassword = async (req: TypedRequest<ResetPasswordSchemaBody>, res: Response) => {
-  const { token, newPassword } = req.body;
+// ==================== RESET PASSWORD ====================
+
+const resetPassword = async (req: Request, res: Response) => {
+  const { token, newPassword } = req.validatedData?.body as ResetPasswordSchemaBody;
 
   await authService.resetPassword({ token, newPassword });
 
   ApiResponse.ok(res, 'Password has been reset successfully.');
 };
+
+// ==================== EXPORT ====================
 
 export const authController = {
   register,

@@ -5,6 +5,8 @@ import { env, getTransporter } from '~/configs';
 import { AppError } from '~/errors';
 import { logger, renderTemplate } from '~/utils';
 
+// ==================== SEND MAIL ====================
+
 export interface SendMailProps {
   from?: string;
   to: string | string[];
@@ -45,6 +47,8 @@ async function sendEmail(props: SendMailProps) {
   }
 }
 
+// ==================== VERIFY CONNECTION ====================
+
 async function verifyConnection() {
   const transporter = getTransporter();
 
@@ -55,6 +59,8 @@ async function verifyConnection() {
     console.warn(chalk.yellow('⚠️  Mail server unavailable, emails may fail'), err);
   }
 }
+
+// ==================== EXPORT ====================
 
 export const mailService = {
   verifyConnection,

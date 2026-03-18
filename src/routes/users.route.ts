@@ -1,6 +1,6 @@
 import { Response, Router } from 'express';
 import z from 'zod';
-import { payloadValidator } from '~/middlewares';
+import { requestValidator } from '~/middlewares';
 import { TypedRequest } from '~/types/express';
 import { ApiResponse } from '~/utils';
 
@@ -8,7 +8,7 @@ const router = Router();
 
 router.post(
   '/',
-  payloadValidator(
+  requestValidator(
     z.object({
       query: z.object({
         name: z.string().min(1, 'Name is required').trim(),

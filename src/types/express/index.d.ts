@@ -5,6 +5,11 @@ declare global {
         userId: string;
         allowedSections?: string[];
       };
+      validatedData?: {
+        body?: unknown;
+        query?: unknown;
+        params?: unknown;
+      };
     }
   }
 }

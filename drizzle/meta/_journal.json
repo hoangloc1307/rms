@@ -15,6 +15,27 @@
       "when": 1772699524374,
       "tag": "0001_brief_rhino",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1773801343663,
+      "tag": "0002_charming_caretaker",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1773819033504,
+      "tag": "0003_fixed_scarlet_spider",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1773820940141,
+      "tag": "0004_nice_screwball",
+      "breakpoints": true
     }
   ]
 }

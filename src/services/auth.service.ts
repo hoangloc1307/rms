@@ -13,17 +13,14 @@ import {
   verifyRefreshToken,
   verifyResetToken,
 } from '~/utils';
-import {
-  ForgotPasswordSchemaBody,
-  GoogleLoginSchemaBody,
-  LoginSchemaBody,
-  RegisterSchemaBody,
-  ResetPasswordSchemaBody,
-} from '~/validations';
 
-const register = async (payload: RegisterSchemaBody) => {
+// ==================== REGISTER ====================
+
+type RegisterParams = { username: string; email: string; name: string };
+
+const register = async ({ username, email, name }: RegisterParams) => {
   const user = await db.query.users.findFirst({
-    where: eq(users.username, payload.username),
+    where: eq(users.username, username),
   });
 
   if (user) {
@@ -37,10 +34,10 @@ const register = async (payload: RegisterSchemaBody) => {
   const insertValue = await db
     .insert(users)
     .values({
-      username: payload.username,
+      username,
       password: hashedPassword,
-      email: payload.email,
-      name: payload.name,
+      email,
+      name,
       createdBy: 'ADMIN',
     })
     .returning({ username: users.username, email: users.email, name: users.name });
@@ -55,16 +52,20 @@ const register = async (payload: RegisterSchemaBody) => {
   };
 };
 
-const login = async (payload: LoginSchemaBody) => {
+// ==================== LOGIN ====================
+
+type LoginParams = { username: string; password: string };
+
+const login = async ({ username, password }: LoginParams) => {
   const user = await db.query.users.findFirst({
-    where: eq(users.username, payload.username),
+    where: eq(users.username, username),
   });
 
   if (!user || !user.isActive) {
     throw AppError.unauthorized('Invalid username or password');
   }
 
-  const isPasswordValid = await verifyPassword(payload.password, user.password);
+  const isPasswordValid = await verifyPassword(password, user.password);
 
   if (!isPasswordValid) {
     throw AppError.unauthorized('Invalid username or password');
@@ -75,6 +76,8 @@ const login = async (payload: LoginSchemaBody) => {
 
   return { accessToken, refreshToken };
 };
+
+// ==================== REFRESH TOKEN ====================
 
 const refresh = async (refreshToken: string) => {
   const decodedToken = verifyRefreshToken(refreshToken);
@@ -96,11 +99,13 @@ const refresh = async (refreshToken: string) => {
   return { accessToken };
 };
 
-const googleLogin = async (payload: GoogleLoginSchemaBody) => {
+// ==================== GOOGLE LOGIN ====================
+
+const googleLogin = async (idToken: string) => {
   const client = new OAuth2Client(env.GOOGLE_CLIENT_ID);
 
   const ticket = await client.verifyIdToken({
-    idToken: payload.idToken,
+    idToken,
     audience: env.GOOGLE_CLIENT_ID,
   });
 
@@ -143,9 +148,11 @@ const googleLogin = async (payload: GoogleLoginSchemaBody) => {
   return { accessToken, refreshToken };
 };
 
-const forgotPassword = async (payload: ForgotPasswordSchemaBody) => {
+// ==================== FORGOT PASSWORD ====================
+
+const forgotPassword = async (email: string) => {
   const user = await db.query.users.findFirst({
-    where: eq(users.email, payload.email),
+    where: eq(users.email, email),
   });
 
   if (!user || !user.isActive) {
@@ -165,11 +172,15 @@ const forgotPassword = async (payload: ForgotPasswordSchemaBody) => {
   };
 };
 
-const resetPassword = async (payload: ResetPasswordSchemaBody) => {
+// ==================== RESET PASSWORD ====================
+
+type ResetPasswordParams = { token: string; newPassword: string };
+
+const resetPassword = async ({ token, newPassword }: ResetPasswordParams) => {
   let decoded: { userId: string; type: string };
 
   try {
-    decoded = verifyResetToken(payload.token);
+    decoded = verifyResetToken(token);
   } catch {
     throw AppError.unauthorized('Invalid or expired reset token');
   }
@@ -180,7 +191,7 @@ const resetPassword = async (payload: ResetPasswordSchemaBody) => {
 
   const storedToken = await cacheService.get(`reset_pwd:${decoded.userId}`);
 
-  if (!storedToken || !verifyResetTokenHash(payload.token, storedToken as string)) {
+  if (!storedToken || !verifyResetTokenHash(token, storedToken as string)) {
     throw AppError.unauthorized('Reset token has already been used or expired');
   }
 
@@ -192,7 +203,7 @@ const resetPassword = async (payload: ResetPasswordSchemaBody) => {
     throw AppError.unauthorized('User not found');
   }
 
-  const hashedPassword = await hashPassword(payload.newPassword);
+  const hashedPassword = await hashPassword(newPassword);
 
   await db
     .update(users)
@@ -201,6 +212,8 @@ const resetPassword = async (payload: ResetPasswordSchemaBody) => {
 
   await cacheService.del(`reset_pwd:${user.username}`);
 };
+
+// ==================== EXPORT ====================
 
 export const authService = {
   register,

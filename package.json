@@ -21,6 +21,7 @@
     "prepare": "husky",
     "commit": "cz",
     "db:migrate": "drizzle-kit migrate",
+    "db:generate": "drizzle-kit generate",
     "dev:db:generate": "dotenv -e .env.development -- drizzle-kit generate",
     "dev:db:migrate": "dotenv -e .env.development -- drizzle-kit migrate",
     "dev:db:studio": "dotenv -e .env.development -- drizzle-kit studio",

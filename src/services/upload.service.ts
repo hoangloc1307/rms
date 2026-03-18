@@ -3,6 +3,8 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { env, s3 } from '~/configs';
 import { generateFileKey } from '~/utils';
 
+// ==================== GENERATE UPLOAD URL ====================
+
 const generateUploadUrl = async (filename: string, contentType: string) => {
   const key = generateFileKey(filename);
 
@@ -20,6 +22,8 @@ const generateUploadUrl = async (filename: string, contentType: string) => {
 
   return { uploadUrl, fileUrl };
 };
+
+// ==================== EXPORT ====================
 
 export const uploadService = {
   generateUploadUrl,

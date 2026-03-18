@@ -1,7 +1,7 @@
-import { env, redis } from '~/configs';
-import prettyMs from 'pretty-ms';
-import { db } from '~/database';
 import { sql } from 'drizzle-orm';
+import prettyMs from 'pretty-ms';
+import { env, redis } from '~/configs';
+import { db } from '~/database';
 
 const checkPostgresql = async () => {
   try {
@@ -15,6 +15,8 @@ const checkPostgresql = async () => {
 const checkRedis = () => {
   return redis.status === 'ready' ? 'healthy' : 'unhealthy';
 };
+
+// ==================== GET HEALTH DETAIL ====================
 
 const getHealthDetail = async () => {
   const healthData = {
@@ -39,6 +41,8 @@ const getHealthDetail = async () => {
 
   return healthData;
 };
+
+// ==================== EXPORT ====================
 
 export const healthService = {
   getHealthDetail,
