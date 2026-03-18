@@ -1,8 +1,8 @@
-import { pgTable, char, varchar, boolean, timestamp, primaryKey } from 'drizzle-orm/pg-core';
-import { users } from './users.schema';
-import { features } from './features.schema';
-import { actionEnum, decisionEnum } from './role-permission.schema';
 import { relations } from 'drizzle-orm';
+import { boolean, char, pgTable, primaryKey, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { actionEnum, decisionEnum } from './enums';
+import { features } from './features.schema';
+import { users } from './users.schema';
 
 // ==================== TABLE DEFINITIONS ====================
 

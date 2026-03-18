@@ -1,17 +1,8 @@
 import { relations } from 'drizzle-orm';
-import { boolean, char, pgEnum, pgTable, primaryKey, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { boolean, char, pgTable, primaryKey, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { actionEnum, decisionEnum } from './enums';
 import { features } from './features.schema';
 import { roles } from './roles.schema';
-
-// ==================== ENUMS ====================
-
-export const actionEnum = pgEnum('action', ['CREATE', 'READ', 'UPDATE', 'DELETE', 'MANAGE', 'APPROVAL']);
-
-export type Action = (typeof actionEnum.enumValues)[number];
-
-export const decisionEnum = pgEnum('decision', ['ALLOW', 'DENY']);
-
-export type Decision = (typeof decisionEnum.enumValues)[number];
 
 // ==================== TABLE DEFINITIONS ====================
 
