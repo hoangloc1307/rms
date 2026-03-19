@@ -56,3 +56,34 @@ export const updateItemMasterSchema = z.object({
 
 export type UpdateItemMasterSchemaParams = z.infer<typeof updateItemMasterSchema>['params'];
 export type UpdateItemMasterSchemaBody = z.infer<typeof updateItemMasterSchema>['body'];
+
+// ==================== IMPORT ITEM MASTER ====================
+
+export const itemMasterImportSchema = z.object({
+  itemCode: z.coerce
+    .string()
+    .trim()
+    .min(1, 'Item code is required')
+    .max(10, 'Item code must be at most 10 characters long'),
+  productCode: z.coerce
+    .string()
+    .trim()
+    .min(1, 'Product code is required')
+    .max(4, 'Product code must be at most 4 characters long'),
+  name: z.string().trim().min(1, 'Name is required').max(150, 'Name must be at most 150 characters long'),
+  unit: z.string().trim().toUpperCase().min(1, 'Unit is required').max(20, 'Unit must be at most 20 characters long'),
+  baseUnit: z.coerce
+    .string()
+    .trim()
+    .toUpperCase()
+    .min(1, 'Base unit is required')
+    .max(20, 'Base unit must be at most 20 characters long'),
+  conversionFactor: z.coerce.number().positive('Conversion factor must be greater than 0').default(1),
+  deliveryOnBaseUnit: z
+    .enum(['Y', 'N'])
+    .transform((value) => value === 'Y')
+    .default(true),
+  note: z.string().trim().max(255, 'Note must be at most 255 characters long').optional().nullable(),
+});
+
+export type ItemMasterImportInput = z.infer<typeof itemMasterImportSchema>;

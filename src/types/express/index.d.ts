@@ -9,6 +9,9 @@ declare global {
         body?: unknown;
         query?: unknown;
         params?: unknown;
+        files?: {
+          [key: string]: Express.Multer.File[];
+        };
       };
     }
   }

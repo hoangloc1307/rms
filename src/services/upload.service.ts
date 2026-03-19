@@ -5,8 +5,8 @@ import { generateFileKey } from '~/utils';
 
 // ==================== GENERATE UPLOAD URL ====================
 
-const generateUploadUrl = async (filename: string, contentType: string) => {
-  const key = generateFileKey(filename);
+const generateUploadUrl = async (filename: string, contentType: string, folder?: string) => {
+  const key = generateFileKey(filename, folder);
 
   const command = new PutObjectCommand({
     Bucket: env.AWS_S3_BUCKET,
@@ -18,7 +18,7 @@ const generateUploadUrl = async (filename: string, contentType: string) => {
     expiresIn: 60,
   });
 
-  const fileUrl = `https://${process.env.AWS_S3_BUCKET}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+  const fileUrl = `https://${env.AWS_S3_BUCKET}.s3.${env.AWS_REGION}.amazonaws.com/${key}`;
 
   return { uploadUrl, fileUrl };
 };

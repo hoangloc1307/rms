@@ -1,5 +1,7 @@
 export * from './enums';
 export * from './features.schema';
+export * from './import-job-rows';
+export * from './import-jobs';
 export * from './item-master.schema';
 export * from './role-permission.schema';
 export * from './roles.schema';

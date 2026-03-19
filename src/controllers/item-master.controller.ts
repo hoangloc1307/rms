@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { itemMasterService } from '~/services';
 import { ApiResponse } from '~/utils';
 import {
@@ -94,6 +94,20 @@ const updateItemMaster = async (req: Request, res: Response) => {
   ApiResponse.ok(res, 'OK', result);
 };
 
+// ==================== IMPORT ====================
+
+const importItemMaster = async (req: Request, res: Response, next: NextFunction) => {
+  const files = req.validatedData?.files;
+  const itemMasterFile = files!.itemMasterFile[0];
+
+  await itemMasterService.importItemMaster({
+    file: itemMasterFile,
+    createdBy: req.user?.userId,
+  });
+
+  ApiResponse.ok(res, 'OK');
+};
+
 // ==================== EXPORT ====================
 
 export const itemMasterController = {
@@ -102,4 +116,5 @@ export const itemMasterController = {
   createItemMaster,
   deleteItemMaster,
   updateItemMaster,
+  importItemMaster,
 };

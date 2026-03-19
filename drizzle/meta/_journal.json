@@ -36,6 +36,34 @@
       "when": 1773820940141,
       "tag": "0004_nice_screwball",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1773909426437,
+      "tag": "0005_grey_nextwave",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1773909452309,
+      "tag": "0006_panoramic_green_goblin",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1773973601658,
+      "tag": "0007_exotic_wrecking_crew",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1773986354934,
+      "tag": "0008_magical_madrox",
+      "breakpoints": true
     }
   ]
 }

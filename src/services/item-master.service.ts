@@ -1,7 +1,9 @@
+import { addMinutes, format } from 'date-fns';
 import { and, count, eq, like, or } from 'drizzle-orm';
 import { db } from '~/database';
-import { itemMasters } from '~/database/schemas';
+import { importJobs, itemMasters } from '~/database/schemas';
 import { AppError } from '~/errors';
+import { addImportJob } from '~/helpers';
 import { PaginationSchemaQuery } from '~/validations';
 
 // ==================== GET ALL ====================
@@ -155,6 +157,50 @@ const updateItemMaster = async (params: UpdateItemMasterParams) => {
   return updatedData[0].itemCode;
 };
 
+// ==================== IMPORT ITEM MASTER ====================
+
+type ImportItemMasterParams = {
+  file: Express.Multer.File;
+  createdBy: string;
+};
+
+const importItemMaster = async (params: ImportItemMasterParams) => {
+  const { file, createdBy } = params;
+  const time = new Date();
+
+  const token = `import-${format(time, 'yyyyMMddHHmmss')}`;
+  const expiredAt = addMinutes(time, 10);
+
+  const insertedData = await db
+    .insert(importJobs)
+    .values({
+      token,
+      type: 'item-master',
+      status: 'PENDING',
+      createdBy,
+      totalRows: 0,
+      createdRows: 0,
+      updatedRows: 0,
+      skippedRows: 0,
+      errorRows: 0,
+      expiredAt,
+      fileName: file.originalname,
+      fileUrl: file.path,
+    })
+    .returning();
+
+  await addImportJob({ token: insertedData[0].token, type: insertedData[0].type });
+
+  return 'ok';
+};
+
 // ==================== EXPORT ====================
 
-export const itemMasterService = { getAll, getItemMasterDetail, createItemMaster, deleteItemMaster, updateItemMaster };
+export const itemMasterService = {
+  getAll,
+  getItemMasterDetail,
+  createItemMaster,
+  deleteItemMaster,
+  updateItemMaster,
+  importItemMaster,
+};

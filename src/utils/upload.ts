@@ -1,9 +1,19 @@
+import { format } from 'date-fns';
 import { Request } from 'express';
 import { FILE_EXTENSION } from '~/constants';
 
-export const generateFileKey = (filename: string) => {
-  const timestamp = Date.now();
-  return `uploads/${timestamp}-${filename}`;
+export const generateFileKey = (filename: string, folder?: string) => {
+  const time = new Date();
+
+  let key = 'uploads/';
+
+  if (folder) {
+    key += `${folder}/`;
+  }
+
+  key += `${format(time, 'yyyyMMddHHmmss')}-${filename}`;
+
+  return key;
 };
 
 export const getFilesFromReq = (req: Request, field: string) => {

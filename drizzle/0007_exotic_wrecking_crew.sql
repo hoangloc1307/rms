@@ -1,0 +1,1 @@
+ALTER TABLE "import_jobs" ADD COLUMN "file_url" varchar(255) NOT NULL;

@@ -1,0 +1,2 @@
+CREATE TYPE "public"."import_action" AS ENUM('CREATE', 'UPDATE', 'SKIP', 'ERROR');--> statement-breakpoint
+CREATE TYPE "public"."import_status" AS ENUM('PENDING', 'VALIDATING', 'VALIDATED', 'COMMITTED', 'FAILED', 'EXPIRED');

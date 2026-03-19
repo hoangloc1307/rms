@@ -1,0 +1,1 @@
+ALTER TABLE "import_job_rows" ALTER COLUMN "normalized_data" DROP NOT NULL;
