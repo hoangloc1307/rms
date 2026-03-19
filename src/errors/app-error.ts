@@ -47,6 +47,22 @@ export class AppError extends Error {
     return new AppError({ httpStatusCode: HTTP_STATUS.CONFLICT, message, errorCode: 'CONFLICT' });
   }
 
+  static unsupportedMediaType(message = 'Unsupported Media Type') {
+    return new AppError({
+      httpStatusCode: HTTP_STATUS.UNSUPPORTED_MEDIA_TYPE,
+      message,
+      errorCode: 'UNSUPPORTED_MEDIA_TYPE',
+    });
+  }
+
+  static contentTooLarge(message = 'Content Too Large') {
+    return new AppError({
+      httpStatusCode: HTTP_STATUS.CONTENT_TOO_LARGE,
+      message,
+      errorCode: 'CONTENT_TOO_LARGE',
+    });
+  }
+
   static server(message = 'Internal Server Error', cause?: unknown) {
     return new AppError({
       httpStatusCode: HTTP_STATUS.INTERNAL_SERVER_ERROR,
