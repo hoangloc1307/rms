@@ -18,6 +18,8 @@ async function startServer() {
       console.log(chalk.green(`✅ Server ${env.ENVIRONMENT} running at ${env.BASE_URL}:${env.PORT}`));
     });
 
+    console.log(server);
+
     // Start jobs
     await initJobs();
 
