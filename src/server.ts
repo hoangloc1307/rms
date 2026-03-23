@@ -10,6 +10,8 @@ const server = http.createServer(app);
 
 async function startServer() {
   try {
+    console.log('OK');
+
     // Connect db
     await connectDatabase();
 
