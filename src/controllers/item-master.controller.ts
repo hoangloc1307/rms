@@ -1,7 +1,8 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { itemMasterService } from '~/services';
 import { ApiResponse } from '~/utils';
 import {
+  CommitItemMasterImportSchemaParams,
   CreateItemMasterSchemaBody,
   DeleteItemMasterSchemaParams,
   GetItemMasterDetailSchemaParams,
@@ -96,16 +97,29 @@ const updateItemMaster = async (req: Request, res: Response) => {
 
 // ==================== IMPORT ====================
 
-const importItemMaster = async (req: Request, res: Response, next: NextFunction) => {
+const importItemMaster = async (req: Request, res: Response) => {
   const files = req.validatedData?.files;
   const itemMasterFile = files!.itemMasterFile[0];
 
-  await itemMasterService.importItemMaster({
+  const result = await itemMasterService.importItemMaster({
     file: itemMasterFile,
     createdBy: req.user?.userId,
   });
 
-  ApiResponse.ok(res, 'OK');
+  ApiResponse.ok(res, 'Imported successfully', result);
+};
+
+// ==================== COMMIT IMPORT ====================
+
+const commitItemMasterImport = async (req: Request, res: Response) => {
+  const { token } = req.validatedData?.params as CommitItemMasterImportSchemaParams;
+
+  await itemMasterService.commitItemMasterImport({
+    token,
+    committedBy: req.user?.userId,
+  });
+
+  ApiResponse.ok(res, 'Committed successfully');
 };
 
 // ==================== EXPORT ====================
@@ -117,4 +131,5 @@ export const itemMasterController = {
   deleteItemMaster,
   updateItemMaster,
   importItemMaster,
+  commitItemMasterImport,
 };

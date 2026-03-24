@@ -87,3 +87,13 @@ export const itemMasterImportSchema = z.object({
 });
 
 export type ItemMasterImportInput = z.infer<typeof itemMasterImportSchema>;
+
+// ==================== COMMIT IMPORT ITEM MASTER ====================
+
+export const commitItemMasterImportSchema = z.object({
+  params: z.object({
+    token: z.string().trim().min(1, 'Import token is required'),
+  }),
+});
+
+export type CommitItemMasterImportSchemaParams = z.infer<typeof commitItemMasterImportSchema>['params'];

@@ -4,6 +4,7 @@ import { itemMasterController } from '~/controllers';
 import { requestValidator } from '~/middlewares';
 import { fileValidator } from '~/middlewares/file-validator.middleware';
 import {
+  commitItemMasterImportSchema,
   createItemMasterSchema,
   deleteItemMasterSchema,
   getItemMasterDetailSchema,
@@ -21,6 +22,11 @@ router.post(
   upload('imports').single('itemMasterFile'),
   fileValidator([{ field: 'itemMasterFile', required: true, allow: ['XLSX', 'XLS'] }]),
   itemMasterController.importItemMaster,
+);
+router.post(
+  '/import/:token/commit',
+  requestValidator(commitItemMasterImportSchema),
+  itemMasterController.commitItemMasterImport,
 );
 router.delete('/:itemCode', requestValidator(deleteItemMasterSchema), itemMasterController.deleteItemMaster);
 router.put('/:itemCode', requestValidator(updateItemMasterSchema), itemMasterController.updateItemMaster);
