@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { integer, jsonb, pgTable, uuid, varchar } from 'drizzle-orm/pg-core';
 import { importActionEnum } from '~/database/schemas/enums';
-import { importJobs } from './import-jobs';
+import { importJobs } from '~/database/schemas/import-jobs';
 
 export const importJobRows = pgTable('import_job_rows', {
   id: uuid('id').defaultRandom().primaryKey(),

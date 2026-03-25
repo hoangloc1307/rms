@@ -22,3 +22,15 @@ export type ImportStatus = (typeof importStatusEnum.enumValues)[number];
 export const importActionEnum = pgEnum('import_action', ['CREATE', 'UPDATE', 'SKIP', 'ERROR']);
 
 export type ImportAction = (typeof importActionEnum.enumValues)[number];
+
+export const stockTransactionTypeEnum = pgEnum('stock_transaction_type', ['IN', 'OUT', 'DELIVERED', 'MOVE', 'ADJUST']);
+
+export type StockTransactionType = (typeof stockTransactionTypeEnum.enumValues)[number];
+
+export const inventoryUnitStatusEnum = pgEnum('inventory_unit_status', ['NORMAL', 'EXPIRED', 'ABNORMAL', 'DAMAGED']);
+
+export type InventoryUnitStatus = (typeof inventoryUnitStatusEnum.enumValues)[number];
+
+export const itemTrackingTypeEnum = pgEnum('item_tracking_type', ['LABEL', 'QUANTITY']);
+
+export type ItemTrackingType = (typeof itemTrackingTypeEnum.enumValues)[number];
