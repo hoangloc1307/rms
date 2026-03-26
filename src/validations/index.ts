@@ -2,4 +2,8 @@ export * from './auth.validation';
 export * from './env.validation';
 export * from './item-master.validation';
 export * from './pagination.validation';
+export * from './rack.validation';
+export * from './shelf.validation';
 export * from './upload.validation';
+export * from './warehouse.validation';
+export * from './zone.validation';
