@@ -71,6 +71,13 @@
       "when": 1774512290753,
       "tag": "0009_optimal_star_brand",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1774533115501,
+      "tag": "0010_solid_shiva",
+      "breakpoints": true
     }
   ]
 }

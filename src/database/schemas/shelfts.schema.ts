@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { boolean, char, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { boolean, char, integer, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { racks } from '~/database/schemas/racks.schema';
 
 // ==================== TABLE DEFINITIONS ====================
@@ -10,6 +10,7 @@ export const shelfts = pgTable('shelfts', {
     .notNull()
     .references(() => racks.code),
   name: varchar('name', { length: 150 }).notNull(),
+  level: integer('level').notNull(),
   note: varchar('note', { length: 255 }),
   isActive: boolean('is_active').default(true).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true, precision: 0 }).defaultNow().notNull(),

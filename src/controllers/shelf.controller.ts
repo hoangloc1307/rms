@@ -38,7 +38,7 @@ const getDetail = async (req: Request, res: Response) => {
 // ==================== CREATE ====================
 
 const create = async (req: Request, res: Response) => {
-  const { code, rackCode, name, note } = req.validatedData?.body as CreateShelfSchemaBody;
+  const { code, rackCode, name, note, level } = req.validatedData?.body as CreateShelfSchemaBody;
 
   const result = await shelfService.create({
     data: {
@@ -46,6 +46,7 @@ const create = async (req: Request, res: Response) => {
       rackCode,
       name,
       note,
+      level,
     },
     createdBy: req.user?.userId,
   });
@@ -57,7 +58,7 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   const { code } = req.validatedData?.params as UpdateShelfSchemaParams;
-  const { rackCode, name, note, isActive } = req.validatedData?.body as UpdateShelfSchemaBody;
+  const { rackCode, name, note, level } = req.validatedData?.body as UpdateShelfSchemaBody;
 
   const result = await shelfService.update({
     code,
@@ -65,7 +66,7 @@ const update = async (req: Request, res: Response) => {
       rackCode,
       name,
       note,
-      isActive,
+      level,
     },
     updatedBy: req.user?.userId,
   });

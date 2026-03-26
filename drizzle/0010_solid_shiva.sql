@@ -1,0 +1,1 @@
+ALTER TABLE "shelfts" ADD COLUMN "level" integer NOT NULL;

@@ -34,6 +34,7 @@ export const createShelfSchema = z.object({
     rackCode: rackCodeSchema,
     name: z.string().trim().min(1, 'Shelf name is required').max(150),
     note: z.string().trim().max(255).optional(),
+    level: z.coerce.number(),
   }),
 });
 
@@ -49,7 +50,7 @@ export const updateShelfSchema = z.object({
     rackCode: rackCodeSchema.optional(),
     name: z.string().trim().min(1).max(150).optional(),
     note: z.string().trim().max(255).optional(),
-    isActive: z.boolean().optional(),
+    level: z.coerce.number().optional(),
   }),
 });
 

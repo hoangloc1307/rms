@@ -12,16 +12,11 @@ const getAll = async (query: ListShelfSchemaQuery) => {
   const whereCondition = and(
     eq(shelfts.isActive, true),
     rackCode ? eq(shelfts.rackCode, rackCode) : undefined,
-    search
-      ? or(like(shelfts.code, `%${search}%`), like(shelfts.name, `%${search}%`), like(shelfts.note, `%${search}%`))
-      : undefined,
+    search ? or(like(shelfts.code, `%${search}%`), like(shelfts.name, `%${search}%`)) : undefined,
   );
 
   const dataPromise = db.query.shelfts.findMany({
     where: whereCondition,
-    with: {
-      rack: true,
-    },
     limit,
     offset: (page - 1) * limit,
   });
@@ -39,7 +34,12 @@ const getDetail = async (code: string) => {
   const data = await db.query.shelfts.findFirst({
     where: and(eq(shelfts.code, code), eq(shelfts.isActive, true)),
     with: {
-      rack: true,
+      rack: {
+        columns: {
+          code: true,
+          name: true,
+        },
+      },
     },
   });
 
@@ -57,6 +57,7 @@ type CreateShelfParams = {
     code: string;
     rackCode: string;
     name: string;
+    level: number;
     note?: string;
   };
   createdBy: string;
@@ -74,23 +75,38 @@ const create = async (params: CreateShelfParams) => {
     }),
   ]);
 
-  if (existingShelf) {
-    throw AppError.conflict('Shelf already exists');
-  }
-
   if (!parentRack) {
     throw AppError.notFound('Rack not found');
   }
 
-  const insertedData = await db
-    .insert(shelfts)
-    .values({
+  if (!existingShelf) {
+    const insertedData = await db
+      .insert(shelfts)
+      .values({
+        ...data,
+        createdBy,
+      })
+      .returning();
+
+    return insertedData[0].code;
+  }
+
+  if (existingShelf.isActive) {
+    throw AppError.conflict('Shelf already exists');
+  }
+
+  const updatedData = await db
+    .update(shelfts)
+    .set({
       ...data,
-      createdBy,
+      isActive: true,
+      updatedAt: new Date(),
+      updatedBy: createdBy,
     })
+    .where(eq(shelfts.code, existingShelf.code))
     .returning();
 
-  return insertedData[0].code;
+  return updatedData[0].code;
 };
 
 // ==================== UPDATE ====================
@@ -101,7 +117,7 @@ type UpdateShelfParams = {
     rackCode?: string;
     name?: string;
     note?: string;
-    isActive?: boolean;
+    level?: number;
   };
   updatedBy: string;
 };
