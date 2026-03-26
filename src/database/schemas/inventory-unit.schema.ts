@@ -2,7 +2,7 @@ import { relations } from 'drizzle-orm';
 import { boolean, char, decimal, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { inventoryUnitStatusEnum } from '~/database/schemas/enums';
 import { itemMasters } from '~/database/schemas/item-master.schema';
-import { shelfts } from '~/database/schemas/shelfts.schema';
+import { shelves } from '~/database/schemas/shelves.schema';
 import { stockTransactions } from '~/database/schemas/stock-transaction.schema';
 
 // ==================== TABLE DEFINITIONS ====================
@@ -15,7 +15,7 @@ export const inventoryUnits = pgTable('inventory_unit', {
     .references(() => itemMasters.itemCode),
   shelfCode: varchar('shelf_code', { length: 20 })
     .notNull()
-    .references(() => shelfts.code),
+    .references(() => shelves.code),
   lot: varchar('lot', { length: 30 }),
   poNo: varchar('po_no', { length: 30 }),
   invoiceNo: varchar('invoice_no', { length: 30 }),
@@ -38,9 +38,9 @@ export const inventoryUnitRelations = relations(inventoryUnits, ({ many, one }) 
     fields: [inventoryUnits.itemCode],
     references: [itemMasters.itemCode],
   }),
-  shelf: one(shelfts, {
+  shelf: one(shelves, {
     fields: [inventoryUnits.shelfCode],
-    references: [shelfts.code],
+    references: [shelves.code],
   }),
   stockTransactions: many(stockTransactions),
 }));

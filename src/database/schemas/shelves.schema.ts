@@ -4,7 +4,7 @@ import { racks } from '~/database/schemas/racks.schema';
 
 // ==================== TABLE DEFINITIONS ====================
 
-export const shelfts = pgTable('shelfts', {
+export const shelves = pgTable('shelves', {
   code: varchar('code', { length: 20 }).primaryKey(),
   rackCode: varchar('rack_code', { length: 20 })
     .notNull()
@@ -21,9 +21,9 @@ export const shelfts = pgTable('shelfts', {
 
 // ==================== RELATIONSHIPS ====================
 
-export const shelftRelations = relations(shelfts, ({ one }) => ({
+export const shelftRelations = relations(shelves, ({ one }) => ({
   rack: one(racks, {
-    fields: [shelfts.rackCode],
+    fields: [shelves.rackCode],
     references: [racks.code],
   }),
 }));

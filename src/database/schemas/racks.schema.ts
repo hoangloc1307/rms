@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { boolean, char, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
-import { shelfts } from '~/database/schemas/shelfts.schema';
+import { shelves } from '~/database/schemas/shelves.schema';
 import { zones } from '~/database/schemas/zones.schema';
 
 // ==================== TABLE DEFINITIONS ====================
@@ -26,5 +26,5 @@ export const rackRelations = relations(racks, ({ many, one }) => ({
     fields: [racks.zoneCode],
     references: [zones.code],
   }),
-  shelfts: many(shelfts),
+  shelves: many(shelves),
 }));

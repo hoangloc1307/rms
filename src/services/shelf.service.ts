@@ -1,6 +1,6 @@
 import { and, count, eq, like, or } from 'drizzle-orm';
 import { db } from '~/database';
-import { racks, shelfts } from '~/database/schemas';
+import { racks, shelves } from '~/database/schemas';
 import { AppError } from '~/errors';
 import { ListShelfSchemaQuery } from '~/validations';
 
@@ -10,18 +10,18 @@ const getAll = async (query: ListShelfSchemaQuery) => {
   const { page, limit, search, rackCode } = query;
 
   const whereCondition = and(
-    eq(shelfts.isActive, true),
-    rackCode ? eq(shelfts.rackCode, rackCode) : undefined,
-    search ? or(like(shelfts.code, `%${search}%`), like(shelfts.name, `%${search}%`)) : undefined,
+    eq(shelves.isActive, true),
+    rackCode ? eq(shelves.rackCode, rackCode) : undefined,
+    search ? or(like(shelves.code, `%${search}%`), like(shelves.name, `%${search}%`)) : undefined,
   );
 
-  const dataPromise = db.query.shelfts.findMany({
+  const dataPromise = db.query.shelves.findMany({
     where: whereCondition,
     limit,
     offset: (page - 1) * limit,
   });
 
-  const totalPromise = db.select({ total: count() }).from(shelfts).where(whereCondition);
+  const totalPromise = db.select({ total: count() }).from(shelves).where(whereCondition);
 
   const [data, totalData] = await Promise.all([dataPromise, totalPromise]);
 
@@ -31,8 +31,8 @@ const getAll = async (query: ListShelfSchemaQuery) => {
 // ==================== GET DETAIL ====================
 
 const getDetail = async (code: string) => {
-  const data = await db.query.shelfts.findFirst({
-    where: and(eq(shelfts.code, code), eq(shelfts.isActive, true)),
+  const data = await db.query.shelves.findFirst({
+    where: and(eq(shelves.code, code), eq(shelves.isActive, true)),
     with: {
       rack: {
         columns: {
@@ -67,8 +67,8 @@ const create = async (params: CreateShelfParams) => {
   const { data, createdBy } = params;
 
   const [existingShelf, parentRack] = await Promise.all([
-    db.query.shelfts.findFirst({
-      where: eq(shelfts.code, data.code),
+    db.query.shelves.findFirst({
+      where: eq(shelves.code, data.code),
     }),
     db.query.racks.findFirst({
       where: and(eq(racks.code, data.rackCode), eq(racks.isActive, true)),
@@ -81,7 +81,7 @@ const create = async (params: CreateShelfParams) => {
 
   if (!existingShelf) {
     const insertedData = await db
-      .insert(shelfts)
+      .insert(shelves)
       .values({
         ...data,
         createdBy,
@@ -96,14 +96,14 @@ const create = async (params: CreateShelfParams) => {
   }
 
   const updatedData = await db
-    .update(shelfts)
+    .update(shelves)
     .set({
       ...data,
       isActive: true,
       updatedAt: new Date(),
       updatedBy: createdBy,
     })
-    .where(eq(shelfts.code, existingShelf.code))
+    .where(eq(shelves.code, existingShelf.code))
     .returning();
 
   return updatedData[0].code;
@@ -125,8 +125,8 @@ type UpdateShelfParams = {
 const update = async (params: UpdateShelfParams) => {
   const { code, data, updatedBy } = params;
 
-  const existingShelf = await db.query.shelfts.findFirst({
-    where: and(eq(shelfts.code, code), eq(shelfts.isActive, true)),
+  const existingShelf = await db.query.shelves.findFirst({
+    where: and(eq(shelves.code, code), eq(shelves.isActive, true)),
   });
 
   if (!existingShelf) {
@@ -144,13 +144,13 @@ const update = async (params: UpdateShelfParams) => {
   }
 
   const updatedData = await db
-    .update(shelfts)
+    .update(shelves)
     .set({
       ...data,
       updatedAt: new Date(),
       updatedBy,
     })
-    .where(eq(shelfts.code, code))
+    .where(eq(shelves.code, code))
     .returning();
 
   return updatedData[0].code;
@@ -166,8 +166,8 @@ type DeleteShelfParams = {
 const remove = async (params: DeleteShelfParams) => {
   const { code, updatedBy } = params;
 
-  const existingShelf = await db.query.shelfts.findFirst({
-    where: and(eq(shelfts.code, code), eq(shelfts.isActive, true)),
+  const existingShelf = await db.query.shelves.findFirst({
+    where: and(eq(shelves.code, code), eq(shelves.isActive, true)),
   });
 
   if (!existingShelf) {
@@ -175,13 +175,13 @@ const remove = async (params: DeleteShelfParams) => {
   }
 
   const updatedData = await db
-    .update(shelfts)
+    .update(shelves)
     .set({
       isActive: false,
       updatedAt: new Date(),
       updatedBy,
     })
-    .where(eq(shelfts.code, code))
+    .where(eq(shelves.code, code))
     .returning();
 
   return updatedData[0].code;

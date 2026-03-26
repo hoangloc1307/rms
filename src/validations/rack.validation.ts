@@ -49,7 +49,6 @@ export const updateRackSchema = z.object({
     zoneCode: zoneCodeSchema.optional(),
     name: z.string().trim().min(1).max(150).optional(),
     note: z.string().trim().max(255).optional(),
-    isActive: z.boolean().optional(),
   }),
 });
 

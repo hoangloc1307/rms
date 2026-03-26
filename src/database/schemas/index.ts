@@ -8,7 +8,7 @@ export * from './racks.schema';
 export * from './role-permission.schema';
 export * from './roles.schema';
 export * from './shelf-inventory.schema';
-export * from './shelfts.schema';
+export * from './shelves.schema';
 export * from './stock-transaction.schema';
 export * from './user-permission.schema';
 export * from './user-role.schema';

@@ -78,6 +78,13 @@
       "when": 1774533115501,
       "tag": "0010_solid_shiva",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1774537667556,
+      "tag": "0011_windy_nick_fury",
+      "breakpoints": true
     }
   ]
 }

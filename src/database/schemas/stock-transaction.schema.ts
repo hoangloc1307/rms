@@ -3,7 +3,7 @@ import { char, decimal, pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg
 import { itemTrackingTypeEnum, stockTransactionTypeEnum } from '~/database/schemas/enums';
 import { inventoryUnits } from '~/database/schemas/inventory-unit.schema';
 import { itemMasters } from '~/database/schemas/item-master.schema';
-import { shelfts } from '~/database/schemas/shelfts.schema';
+import { shelves } from '~/database/schemas/shelves.schema';
 
 // ==================== TABLE DEFINITIONS ====================
 
@@ -13,8 +13,8 @@ export const stockTransactions = pgTable('stock_transaction', {
     .notNull()
     .references(() => itemMasters.itemCode),
   inventoryUnitId: uuid('inventory_unit_id').references(() => inventoryUnits.id),
-  fromShelfCode: varchar('from_shelf_code', { length: 20 }).references(() => shelfts.code),
-  toShelfCode: varchar('to_shelf_code', { length: 20 }).references(() => shelfts.code),
+  fromShelfCode: varchar('from_shelf_code', { length: 20 }).references(() => shelves.code),
+  toShelfCode: varchar('to_shelf_code', { length: 20 }).references(() => shelves.code),
   type: stockTransactionTypeEnum('type').notNull(),
   trackingType: itemTrackingTypeEnum('tracking_type').notNull(),
   quantity: decimal('quantity', { precision: 18, scale: 3 }).notNull(),
@@ -37,12 +37,12 @@ export const stockTransactionRelations = relations(stockTransactions, ({ one }) 
     fields: [stockTransactions.inventoryUnitId],
     references: [inventoryUnits.id],
   }),
-  fromShelf: one(shelfts, {
+  fromShelf: one(shelves, {
     fields: [stockTransactions.fromShelfCode],
-    references: [shelfts.code],
+    references: [shelves.code],
   }),
-  toShelf: one(shelfts, {
+  toShelf: one(shelves, {
     fields: [stockTransactions.toShelfCode],
-    references: [shelfts.code],
+    references: [shelves.code],
   }),
 }));

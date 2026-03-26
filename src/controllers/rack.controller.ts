@@ -57,7 +57,7 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   const { code } = req.validatedData?.params as UpdateRackSchemaParams;
-  const { zoneCode, name, note, isActive } = req.validatedData?.body as UpdateRackSchemaBody;
+  const { zoneCode, name, note } = req.validatedData?.body as UpdateRackSchemaBody;
 
   const result = await rackService.update({
     code,
@@ -65,7 +65,6 @@ const update = async (req: Request, res: Response) => {
       zoneCode,
       name,
       note,
-      isActive,
     },
     updatedBy: req.user?.userId,
   });
