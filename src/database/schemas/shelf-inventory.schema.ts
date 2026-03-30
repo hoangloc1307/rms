@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { boolean, char, decimal, pgTable, primaryKey, timestamp, varchar } from 'drizzle-orm/pg-core';
-import { itemMasters } from '~/database/schemas/item-master.schema';
+import { items } from '~/database/schemas/items.schema';
 import { shelves } from '~/database/schemas/shelves.schema';
 import { stockTransactions } from '~/database/schemas/stock-transaction.schema';
 
@@ -14,7 +14,7 @@ export const shelfInventory = pgTable(
       .references(() => shelves.code),
     itemCode: varchar('item_code', { length: 10 })
       .notNull()
-      .references(() => itemMasters.itemCode),
+      .references(() => items.itemCode),
     quantity: decimal('quantity', { precision: 18, scale: 3 }).notNull(),
     note: varchar('note', { length: 255 }),
     isActive: boolean('is_active').default(true).notNull(),
@@ -33,9 +33,9 @@ export const shelfInventory = pgTable(
 // ==================== RELATIONSHIPS ====================
 
 export const shelfInventoryRelations = relations(shelfInventory, ({ many, one }) => ({
-  item: one(itemMasters, {
+  item: one(items, {
     fields: [shelfInventory.itemCode],
-    references: [itemMasters.itemCode],
+    references: [items.itemCode],
   }),
   shelf: one(shelves, {
     fields: [shelfInventory.shelfCode],

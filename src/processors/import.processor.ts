@@ -4,7 +4,7 @@ import ExcelJS from 'exceljs';
 import _isEqual from 'lodash/isEqual';
 import _omit from 'lodash/omit';
 import { db } from '~/database';
-import { importJobRows, importJobs, itemMasters } from '~/database/schemas';
+import { importJobRows, importJobs, items } from '~/database/schemas';
 import { AppError } from '~/errors';
 import { getDiffData } from '~/utils';
 import { ItemMasterImportInput, itemMasterImportSchema } from '~/validations';
@@ -67,8 +67,8 @@ const importItemMaster = async (jobRecord: typeof importJobs.$inferSelect) => {
 
   const itemCodes = validatedData.map((item) => item.itemCode);
 
-  const existingItems = await db.query.itemMasters.findMany({
-    where: inArray(itemMasters.itemCode, itemCodes),
+  const existingItems = await db.query.items.findMany({
+    where: inArray(items.itemCode, itemCodes),
   });
 
   const exiexistingItemByItemCode = existingItems.reduce(
@@ -76,7 +76,7 @@ const importItemMaster = async (jobRecord: typeof importJobs.$inferSelect) => {
       acc[item.itemCode] = item;
       return acc;
     },
-    {} as Record<string, typeof itemMasters.$inferSelect>,
+    {} as Record<string, typeof items.$inferSelect>,
   );
 
   validatedData.forEach((item) => {

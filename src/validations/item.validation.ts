@@ -22,6 +22,7 @@ export const createItemMasterSchema = z.object({
     conversionFactor: z.coerce.number().default(1),
     deliveryOnBaseUnit: z.boolean().default(true),
     note: z.string().trim().optional(),
+    trackingType: z.enum(['LABEL', 'QUANTITY']),
   }),
 });
 
@@ -84,6 +85,7 @@ export const itemMasterImportSchema = z.object({
     .transform((value) => value === 'Y')
     .default(true),
   note: z.string().trim().max(255, 'Note must be at most 255 characters long').optional().nullable(),
+  trackingType: z.enum(['LABEL', 'QUANTITY']),
 });
 
 export type ItemMasterImportInput = z.infer<typeof itemMasterImportSchema>;

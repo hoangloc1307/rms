@@ -1,7 +1,7 @@
 import { type Router } from 'express';
 import authRoutes from '~/routes/auth.route';
 import healthRoutes from '~/routes/health.route';
-import itemMasterRoutes from '~/routes/item-master.route';
+import itemMasterRoutes from '~/routes/item.route';
 import rackRoutes from '~/routes/rack.route';
 import shelfRoutes from '~/routes/shelf.route';
 import uploadRoutes from '~/routes/upload.route';

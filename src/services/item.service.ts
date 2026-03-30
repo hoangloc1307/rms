@@ -1,7 +1,7 @@
 import { addMinutes, format } from 'date-fns';
 import { and, count, eq, inArray, like, or } from 'drizzle-orm';
 import { db } from '~/database';
-import { importJobRows, importJobs, itemMasters } from '~/database/schemas';
+import { importJobRows, importJobs, items, ItemTrackingType } from '~/database/schemas';
 import { AppError } from '~/errors';
 import { addImportJob } from '~/helpers';
 import { PaginationSchemaQuery } from '~/validations';
@@ -13,23 +13,23 @@ const getAll = async (query: PaginationSchemaQuery) => {
 
   const whereCondition = search
     ? and(
-        eq(itemMasters.isActive, true),
+        eq(items.isActive, true),
         or(
-          like(itemMasters.name, `%${search}%`),
-          like(itemMasters.productCode, `%${search}%`),
-          like(itemMasters.unit, `%${search}%`),
-          like(itemMasters.baseUnit, `%${search}%`),
+          like(items.name, `%${search}%`),
+          like(items.productCode, `%${search}%`),
+          like(items.unit, `%${search}%`),
+          like(items.baseUnit, `%${search}%`),
         ),
       )
-    : eq(itemMasters.isActive, true);
+    : eq(items.isActive, true);
 
-  const dataPromise = db.query.itemMasters.findMany({
+  const dataPromise = db.query.items.findMany({
     where: whereCondition,
     limit,
     offset: (page - 1) * limit,
   });
 
-  const totalPromise = db.select({ total: count() }).from(itemMasters).where(whereCondition);
+  const totalPromise = db.select({ total: count() }).from(items).where(whereCondition);
 
   const [data, totalData] = await Promise.all([dataPromise, totalPromise]);
 
@@ -39,8 +39,8 @@ const getAll = async (query: PaginationSchemaQuery) => {
 // ==================== GET DETAIL ====================
 
 const getItemMasterDetail = async (itemCode: string) => {
-  const data = await db.query.itemMasters.findFirst({
-    where: and(eq(itemMasters.itemCode, itemCode), eq(itemMasters.isActive, true)),
+  const data = await db.query.items.findFirst({
+    where: and(eq(items.itemCode, itemCode), eq(items.isActive, true)),
   });
 
   if (!data) {
@@ -62,6 +62,7 @@ type CreateItemMasterParams = {
     conversionFactor?: number;
     deliveryOnBaseUnit?: boolean;
     note?: string;
+    trackingType: ItemTrackingType;
   };
   createdBy: string;
 };
@@ -69,8 +70,8 @@ type CreateItemMasterParams = {
 const createItemMaster = async (params: CreateItemMasterParams) => {
   const { data, createdBy } = params;
 
-  const existingItem = await db.query.itemMasters.findFirst({
-    where: eq(itemMasters.itemCode, data.itemCode),
+  const existingItem = await db.query.items.findFirst({
+    where: eq(items.itemCode, data.itemCode),
   });
 
   if (existingItem) {
@@ -78,7 +79,7 @@ const createItemMaster = async (params: CreateItemMasterParams) => {
   }
 
   const insertedData = await db
-    .insert(itemMasters)
+    .insert(items)
     .values({
       ...data,
       conversionFactor: data.conversionFactor?.toString(),
@@ -99,8 +100,8 @@ type DeleteItemMasterParams = {
 const deleteItemMaster = async (params: DeleteItemMasterParams) => {
   const { itemCode, updatedBy } = params;
 
-  const existingItem = await db.query.itemMasters.findFirst({
-    where: and(eq(itemMasters.itemCode, itemCode), eq(itemMasters.isActive, true)),
+  const existingItem = await db.query.items.findFirst({
+    where: and(eq(items.itemCode, itemCode), eq(items.isActive, true)),
   });
 
   if (!existingItem) {
@@ -108,9 +109,9 @@ const deleteItemMaster = async (params: DeleteItemMasterParams) => {
   }
 
   const updatedData = await db
-    .update(itemMasters)
+    .update(items)
     .set({ isActive: false, updatedAt: new Date(), updatedBy })
-    .where(eq(itemMasters.itemCode, itemCode))
+    .where(eq(items.itemCode, itemCode))
     .returning();
 
   return updatedData[0].itemCode;
@@ -135,8 +136,8 @@ type UpdateItemMasterParams = {
 const updateItemMaster = async (params: UpdateItemMasterParams) => {
   const { itemCode, data, updatedBy } = params;
 
-  const existingItem = await db.query.itemMasters.findFirst({
-    where: and(eq(itemMasters.itemCode, itemCode), eq(itemMasters.isActive, true)),
+  const existingItem = await db.query.items.findFirst({
+    where: and(eq(items.itemCode, itemCode), eq(items.isActive, true)),
   });
 
   if (!existingItem) {
@@ -144,14 +145,14 @@ const updateItemMaster = async (params: UpdateItemMasterParams) => {
   }
 
   const updatedData = await db
-    .update(itemMasters)
+    .update(items)
     .set({
       ...data,
       conversionFactor: data.conversionFactor?.toString(),
       updatedAt: new Date(),
       updatedBy,
     })
-    .where(eq(itemMasters.itemCode, itemCode))
+    .where(eq(items.itemCode, itemCode))
     .returning();
 
   return updatedData[0].itemCode;
@@ -205,7 +206,7 @@ type CommitItemMasterImportParams = {
   committedBy: string;
 };
 
-type ItemMasterImportNormalizedData = {
+type ItemImportNormalizedData = {
   itemCode: string;
   productCode: string;
   name: string;
@@ -214,6 +215,7 @@ type ItemMasterImportNormalizedData = {
   conversionFactor: number;
   deliveryOnBaseUnit: boolean;
   note: string | null;
+  trackingType: ItemTrackingType;
 };
 
 const commitItemMasterImport = async (params: CommitItemMasterImportParams) => {
@@ -253,9 +255,9 @@ const commitItemMasterImport = async (params: CommitItemMasterImportParams) => {
     const updatedRows = rows.filter((row) => row.action === 'UPDATE');
 
     if (createdRows.length > 0) {
-      await tx.insert(itemMasters).values(
+      await tx.insert(items).values(
         createdRows.map((row) => {
-          const normalizedData = row.normalizedData as ItemMasterImportNormalizedData;
+          const normalizedData = row.normalizedData as ItemImportNormalizedData;
 
           return {
             itemCode: normalizedData.itemCode,
@@ -267,6 +269,7 @@ const commitItemMasterImport = async (params: CommitItemMasterImportParams) => {
             deliveryOnBaseUnit: normalizedData.deliveryOnBaseUnit,
             note: normalizedData.note ?? null,
             createdBy: committedBy,
+            trackingType: normalizedData.trackingType,
           };
         }),
       );
@@ -275,10 +278,10 @@ const commitItemMasterImport = async (params: CommitItemMasterImportParams) => {
     if (updatedRows.length > 0) {
       await Promise.all(
         updatedRows.map(async (row) => {
-          const normalizedData = row.normalizedData as ItemMasterImportNormalizedData;
+          const normalizedData = row.normalizedData as ItemImportNormalizedData;
 
           const result = await tx
-            .update(itemMasters)
+            .update(items)
             .set({
               productCode: normalizedData.productCode,
               name: normalizedData.name,
@@ -290,8 +293,8 @@ const commitItemMasterImport = async (params: CommitItemMasterImportParams) => {
               updatedAt: time,
               updatedBy: committedBy,
             })
-            .where(eq(itemMasters.itemCode, normalizedData.itemCode))
-            .returning({ itemCode: itemMasters.itemCode });
+            .where(eq(items.itemCode, normalizedData.itemCode))
+            .returning({ itemCode: items.itemCode });
 
           if (!result.length) {
             throw AppError.conflict(`Item ${normalizedData.itemCode} no longer exists for update`);

@@ -3,7 +3,7 @@ import { itemTrackingTypeEnum } from '~/database/schemas/enums';
 
 // ==================== TABLE DEFINITIONS ====================
 
-export const itemMasters = pgTable('item_masters', {
+export const items = pgTable('items', {
   itemCode: varchar('item_code', { length: 10 }).primaryKey(),
   productCode: char('product_code', { length: 4 }).notNull(),
   name: varchar('name', { length: 150 }).notNull(),

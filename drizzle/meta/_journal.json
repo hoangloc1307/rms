@@ -85,6 +85,13 @@
       "when": 1774537667556,
       "tag": "0011_windy_nick_fury",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1774877310441,
+      "tag": "0012_foamy_wild_pack",
+      "breakpoints": true
     }
   ]
 }

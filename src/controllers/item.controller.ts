@@ -38,8 +38,8 @@ const getItemMasterDetail = async (req: Request, res: Response) => {
 // ==================== CREATE ITEM MASTER ====================
 
 const createItemMaster = async (req: Request, res: Response) => {
-  const { itemCode, productCode, name, unit, baseUnit, conversionFactor, deliveryOnBaseUnit, note } = req.validatedData
-    ?.body as CreateItemMasterSchemaBody;
+  const { itemCode, productCode, name, unit, baseUnit, conversionFactor, deliveryOnBaseUnit, note, trackingType } = req
+    .validatedData?.body as CreateItemMasterSchemaBody;
 
   const result = await itemMasterService.createItemMaster({
     data: {
@@ -51,6 +51,7 @@ const createItemMaster = async (req: Request, res: Response) => {
       conversionFactor,
       deliveryOnBaseUnit,
       note,
+      trackingType,
     },
     createdBy: req.user?.userId,
   });
