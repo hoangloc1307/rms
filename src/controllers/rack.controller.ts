@@ -15,14 +15,14 @@ import {
 const getAll = async (req: Request, res: Response) => {
   const { page, limit, search, zoneCode } = req.validatedData?.query as ListRackSchemaQuery;
 
-  const result = await rackService.getAll({
+  const { data, total } = await rackService.getAll({
     page,
     limit,
     search,
     zoneCode,
   });
 
-  ApiResponse.paginated(res, result.data, page, limit, result.total);
+  ApiResponse.paginated(res, data, page, limit, total);
 };
 
 // ==================== GET DETAIL ====================
@@ -30,9 +30,9 @@ const getAll = async (req: Request, res: Response) => {
 const getDetail = async (req: Request, res: Response) => {
   const { code } = req.validatedData?.params as GetRackDetailSchemaParams;
 
-  const result = await rackService.getDetail(code);
+  const { data } = await rackService.getDetail(code);
 
-  ApiResponse.ok(res, 'OK', result.data);
+  ApiResponse.ok(res, 'OK', data);
 };
 
 // ==================== CREATE ====================
@@ -47,7 +47,7 @@ const create = async (req: Request, res: Response) => {
       name,
       note,
     },
-    createdBy: req.user?.userId,
+    userId: req.user?.userId,
   });
 
   ApiResponse.created(res, 'OK', result);
@@ -66,7 +66,7 @@ const update = async (req: Request, res: Response) => {
       name,
       note,
     },
-    updatedBy: req.user?.userId,
+    userId: req.user?.userId,
   });
 
   ApiResponse.ok(res, 'OK', result);
@@ -79,7 +79,7 @@ const remove = async (req: Request, res: Response) => {
 
   await rackService.remove({
     code,
-    updatedBy: req.user?.userId,
+    userId: req.user?.userId,
   });
 
   ApiResponse.deleted(res);

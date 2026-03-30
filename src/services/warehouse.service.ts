@@ -1,6 +1,6 @@
 import { and, count, eq, like, or } from 'drizzle-orm';
 import { db } from '~/database';
-import { warehouses } from '~/database/schemas';
+import { warehouses, zones } from '~/database/schemas';
 import { AppError } from '~/errors';
 import { ListWarehouseSchemaQuery } from '~/validations';
 
@@ -9,9 +9,10 @@ import { ListWarehouseSchemaQuery } from '~/validations';
 const getAll = async (query: ListWarehouseSchemaQuery) => {
   const { page, limit, search } = query;
 
-  const whereCondition = search
-    ? and(eq(warehouses.isActive, true), or(like(warehouses.code, `%${search}%`), like(warehouses.name, `%${search}%`)))
-    : eq(warehouses.isActive, true);
+  const whereCondition = and(
+    eq(warehouses.isActive, true),
+    search ? or(like(warehouses.code, `%${search}%`), like(warehouses.name, `%${search}%`)) : undefined,
+  );
 
   const dataPromise = db.query.warehouses.findMany({
     where: whereCondition,
@@ -21,9 +22,9 @@ const getAll = async (query: ListWarehouseSchemaQuery) => {
 
   const totalPromise = db.select({ total: count() }).from(warehouses).where(whereCondition);
 
-  const [data, totalData] = await Promise.all([dataPromise, totalPromise]);
+  const [data, [{ total }]] = await Promise.all([dataPromise, totalPromise]);
 
-  return { data, total: totalData[0].total };
+  return { data, total };
 };
 
 // ==================== GET DETAIL ====================
@@ -48,29 +49,45 @@ type CreateWarehouseParams = {
     name: string;
     note?: string;
   };
-  createdBy: string;
+  userId: string;
 };
 
 const create = async (params: CreateWarehouseParams) => {
-  const { data, createdBy } = params;
+  const { data, userId } = params;
+  const now = new Date();
 
   const existingWarehouse = await db.query.warehouses.findFirst({
     where: eq(warehouses.code, data.code),
   });
 
-  if (existingWarehouse) {
+  if (!existingWarehouse) {
+    const [insertedData] = await db
+      .insert(warehouses)
+      .values({
+        ...data,
+        createdBy: userId,
+      })
+      .returning();
+
+    return insertedData.code;
+  }
+
+  if (existingWarehouse.isActive) {
     throw AppError.conflict('Warehouse already exists');
   }
 
-  const insertedData = await db
-    .insert(warehouses)
-    .values({
+  const [updatedData] = await db
+    .update(warehouses)
+    .set({
       ...data,
-      createdBy,
+      isActive: true,
+      updatedAt: now,
+      updatedBy: userId,
     })
+    .where(eq(warehouses.code, existingWarehouse.code))
     .returning();
 
-  return insertedData[0].code;
+  return updatedData.code;
 };
 
 // ==================== UPDATE ====================
@@ -81,11 +98,11 @@ type UpdateWarehouseParams = {
     name?: string;
     note?: string;
   };
-  updatedBy: string;
+  userId: string;
 };
 
 const update = async (params: UpdateWarehouseParams) => {
-  const { code, data, updatedBy } = params;
+  const { code, data, userId } = params;
 
   const existingWarehouse = await db.query.warehouses.findFirst({
     where: and(eq(warehouses.code, code), eq(warehouses.isActive, true)),
@@ -95,28 +112,28 @@ const update = async (params: UpdateWarehouseParams) => {
     throw AppError.notFound('Warehouse not found');
   }
 
-  const updatedData = await db
+  const [updatedData] = await db
     .update(warehouses)
     .set({
       ...data,
       updatedAt: new Date(),
-      updatedBy,
+      updatedBy: userId,
     })
     .where(eq(warehouses.code, code))
     .returning();
 
-  return updatedData[0].code;
+  return updatedData.code;
 };
 
 // ==================== DELETE ====================
 
 type DeleteWarehouseParams = {
   code: string;
-  updatedBy: string;
+  userId: string;
 };
 
 const remove = async (params: DeleteWarehouseParams) => {
-  const { code, updatedBy } = params;
+  const { code, userId } = params;
 
   const existingWarehouse = await db.query.warehouses.findFirst({
     where: and(eq(warehouses.code, code), eq(warehouses.isActive, true)),
@@ -126,17 +143,25 @@ const remove = async (params: DeleteWarehouseParams) => {
     throw AppError.notFound('Warehouse not found');
   }
 
-  const updatedData = await db
+  const existingZone = await db.query.zones.findFirst({
+    where: and(eq(zones.warehouseCode, code), eq(zones.isActive, true)),
+  });
+
+  if (existingZone) {
+    throw AppError.conflict('Warehouse has active zones');
+  }
+
+  const [updatedData] = await db
     .update(warehouses)
     .set({
       isActive: false,
       updatedAt: new Date(),
-      updatedBy,
+      updatedBy: userId,
     })
     .where(eq(warehouses.code, code))
     .returning();
 
-  return updatedData[0].code;
+  return updatedData.code;
 };
 
 // ==================== EXPORT ====================

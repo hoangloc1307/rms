@@ -49,7 +49,6 @@ export const updateZoneSchema = z.object({
     warehouseCode: warehouseCodeSchema.optional(),
     name: z.string().trim().min(1).max(150).optional(),
     note: z.string().trim().max(255).optional(),
-    isActive: z.boolean().optional(),
   }),
 });
 

@@ -15,14 +15,14 @@ import {
 const getAll = async (req: Request, res: Response) => {
   const { page, limit, search, rackCode } = req.validatedData?.query as ListShelfSchemaQuery;
 
-  const result = await shelfService.getAll({
+  const { data, total } = await shelfService.getAll({
     page,
     limit,
     search,
     rackCode,
   });
 
-  ApiResponse.paginated(res, result.data, page, limit, result.total);
+  ApiResponse.paginated(res, data, page, limit, total);
 };
 
 // ==================== GET DETAIL ====================
@@ -30,9 +30,9 @@ const getAll = async (req: Request, res: Response) => {
 const getDetail = async (req: Request, res: Response) => {
   const { code } = req.validatedData?.params as GetShelfDetailSchemaParams;
 
-  const result = await shelfService.getDetail(code);
+  const { data } = await shelfService.getDetail(code);
 
-  ApiResponse.ok(res, 'OK', result.data);
+  ApiResponse.ok(res, 'OK', data);
 };
 
 // ==================== CREATE ====================
@@ -48,7 +48,7 @@ const create = async (req: Request, res: Response) => {
       note,
       level,
     },
-    createdBy: req.user?.userId,
+    userId: req.user?.userId,
   });
 
   ApiResponse.created(res, 'OK', result);
@@ -68,7 +68,7 @@ const update = async (req: Request, res: Response) => {
       note,
       level,
     },
-    updatedBy: req.user?.userId,
+    userId: req.user?.userId,
   });
 
   ApiResponse.ok(res, 'OK', result);
@@ -81,7 +81,7 @@ const remove = async (req: Request, res: Response) => {
 
   await shelfService.remove({
     code,
-    updatedBy: req.user?.userId,
+    userId: req.user?.userId,
   });
 
   ApiResponse.deleted(res);

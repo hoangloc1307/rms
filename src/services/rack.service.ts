@@ -23,9 +23,9 @@ const getAll = async (query: ListRackSchemaQuery) => {
 
   const totalPromise = db.select({ total: count() }).from(racks).where(whereCondition);
 
-  const [data, [totalData]] = await Promise.all([dataPromise, totalPromise]);
+  const [data, [{ total }]] = await Promise.all([dataPromise, totalPromise]);
 
-  return { data, total: totalData.total };
+  return { data, total };
 };
 
 // ==================== GET DETAIL ====================
@@ -59,11 +59,11 @@ type CreateRackParams = {
     name: string;
     note?: string;
   };
-  createdBy: string;
+  userId: string;
 };
 
 const create = async (params: CreateRackParams) => {
-  const { data, createdBy } = params;
+  const { data, userId } = params;
   const now = new Date();
 
   const [existingRack, parentZone] = await Promise.all([
@@ -84,7 +84,7 @@ const create = async (params: CreateRackParams) => {
       .insert(racks)
       .values({
         ...data,
-        createdBy,
+        createdBy: userId,
       })
       .returning();
 
@@ -95,29 +95,18 @@ const create = async (params: CreateRackParams) => {
     throw AppError.conflict('Rack already exists');
   }
 
-  await db.transaction(async (tx) => {
-    const [restoredRack] = await tx
-      .update(racks)
-      .set({
-        ...data,
-        isActive: true,
-        updatedAt: now,
-        updatedBy: createdBy,
-      })
-      .where(eq(racks.code, existingRack.code))
-      .returning();
+  const [updatedData] = await db
+    .update(racks)
+    .set({
+      ...data,
+      isActive: true,
+      updatedAt: now,
+      updatedBy: userId,
+    })
+    .where(eq(racks.code, existingRack.code))
+    .returning();
 
-    await tx
-      .update(shelves)
-      .set({
-        isActive: true,
-        updatedAt: now,
-        updatedBy: createdBy,
-      })
-      .where(eq(shelves.rackCode, existingRack.code));
-
-    return restoredRack;
-  });
+  return updatedData.code;
 };
 
 // ==================== UPDATE ====================
@@ -129,11 +118,11 @@ type UpdateRackParams = {
     name?: string;
     note?: string;
   };
-  updatedBy: string;
+  userId: string;
 };
 
 const update = async (params: UpdateRackParams) => {
-  const { code, data, updatedBy } = params;
+  const { code, data, userId } = params;
 
   const existingRack = await db.query.racks.findFirst({
     where: and(eq(racks.code, code), eq(racks.isActive, true)),
@@ -158,7 +147,7 @@ const update = async (params: UpdateRackParams) => {
     .set({
       ...data,
       updatedAt: new Date(),
-      updatedBy,
+      updatedBy: userId,
     })
     .where(eq(racks.code, code))
     .returning();
@@ -170,12 +159,11 @@ const update = async (params: UpdateRackParams) => {
 
 type DeleteRackParams = {
   code: string;
-  updatedBy: string;
+  userId: string;
 };
 
 const remove = async (params: DeleteRackParams) => {
-  const { code, updatedBy } = params;
-  const now = new Date();
+  const { code, userId } = params;
 
   const existingRack = await db.query.racks.findFirst({
     where: and(eq(racks.code, code), eq(racks.isActive, true)),
@@ -185,28 +173,25 @@ const remove = async (params: DeleteRackParams) => {
     throw AppError.notFound('Rack not found');
   }
 
-  await db.transaction(async (tx) => {
-    const [removedRack] = await tx
-      .update(racks)
-      .set({
-        isActive: false,
-        updatedAt: now,
-        updatedBy,
-      })
-      .where(eq(racks.code, existingRack.code))
-      .returning();
-
-    await tx
-      .update(shelves)
-      .set({
-        isActive: false,
-        updatedAt: now,
-        updatedBy,
-      })
-      .where(eq(shelves.rackCode, existingRack.code));
-
-    return removedRack;
+  const existingShelf = await db.query.shelves.findFirst({
+    where: and(eq(shelves.rackCode, code), eq(shelves.isActive, true)),
   });
+
+  if (existingShelf) {
+    throw AppError.conflict('Rack has active shelves');
+  }
+
+  const [updatedData] = await db
+    .update(racks)
+    .set({
+      isActive: false,
+      updatedAt: new Date(),
+      updatedBy: userId,
+    })
+    .where(eq(racks.code, existingRack.code))
+    .returning();
+
+  return updatedData.code;
 };
 
 // ==================== EXPORT ====================

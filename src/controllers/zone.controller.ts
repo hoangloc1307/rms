@@ -15,14 +15,14 @@ import {
 const getAll = async (req: Request, res: Response) => {
   const { page, limit, search, warehouseCode } = req.validatedData?.query as ListZoneSchemaQuery;
 
-  const result = await zoneService.getAll({
+  const { data, total } = await zoneService.getAll({
     page,
     limit,
     search,
     warehouseCode,
   });
 
-  ApiResponse.paginated(res, result.data, page, limit, result.total);
+  ApiResponse.paginated(res, data, page, limit, total);
 };
 
 // ==================== GET DETAIL ====================
@@ -30,9 +30,9 @@ const getAll = async (req: Request, res: Response) => {
 const getDetail = async (req: Request, res: Response) => {
   const { code } = req.validatedData?.params as GetZoneDetailSchemaParams;
 
-  const result = await zoneService.getDetail(code);
+  const { data } = await zoneService.getDetail(code);
 
-  ApiResponse.ok(res, 'OK', result.data);
+  ApiResponse.ok(res, 'OK', data);
 };
 
 // ==================== CREATE ====================
@@ -47,7 +47,7 @@ const create = async (req: Request, res: Response) => {
       name,
       note,
     },
-    createdBy: req.user?.userId,
+    userId: req.user?.userId,
   });
 
   ApiResponse.created(res, 'OK', result);
@@ -57,7 +57,7 @@ const create = async (req: Request, res: Response) => {
 
 const update = async (req: Request, res: Response) => {
   const { code } = req.validatedData?.params as UpdateZoneSchemaParams;
-  const { warehouseCode, name, note, isActive } = req.validatedData?.body as UpdateZoneSchemaBody;
+  const { warehouseCode, name, note } = req.validatedData?.body as UpdateZoneSchemaBody;
 
   const result = await zoneService.update({
     code,
@@ -65,9 +65,8 @@ const update = async (req: Request, res: Response) => {
       warehouseCode,
       name,
       note,
-      isActive,
     },
-    updatedBy: req.user?.userId,
+    userId: req.user?.userId,
   });
 
   ApiResponse.ok(res, 'OK', result);
@@ -80,7 +79,7 @@ const remove = async (req: Request, res: Response) => {
 
   await zoneService.remove({
     code,
-    updatedBy: req.user?.userId,
+    userId: req.user?.userId,
   });
 
   ApiResponse.deleted(res);

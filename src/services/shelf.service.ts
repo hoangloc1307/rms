@@ -1,6 +1,6 @@
 import { and, count, eq, like, or } from 'drizzle-orm';
 import { db } from '~/database';
-import { racks, shelves } from '~/database/schemas';
+import { racks, shelfInventory, shelves } from '~/database/schemas';
 import { AppError } from '~/errors';
 import { ListShelfSchemaQuery } from '~/validations';
 
@@ -23,9 +23,9 @@ const getAll = async (query: ListShelfSchemaQuery) => {
 
   const totalPromise = db.select({ total: count() }).from(shelves).where(whereCondition);
 
-  const [data, totalData] = await Promise.all([dataPromise, totalPromise]);
+  const [data, [{ total }]] = await Promise.all([dataPromise, totalPromise]);
 
-  return { data, total: totalData[0].total };
+  return { data, total };
 };
 
 // ==================== GET DETAIL ====================
@@ -60,11 +60,11 @@ type CreateShelfParams = {
     level: number;
     note?: string;
   };
-  createdBy: string;
+  userId: string;
 };
 
 const create = async (params: CreateShelfParams) => {
-  const { data, createdBy } = params;
+  const { data, userId } = params;
 
   const [existingShelf, parentRack] = await Promise.all([
     db.query.shelves.findFirst({
@@ -80,33 +80,33 @@ const create = async (params: CreateShelfParams) => {
   }
 
   if (!existingShelf) {
-    const insertedData = await db
+    const [insertedData] = await db
       .insert(shelves)
       .values({
         ...data,
-        createdBy,
+        createdBy: userId,
       })
       .returning();
 
-    return insertedData[0].code;
+    return insertedData.code;
   }
 
   if (existingShelf.isActive) {
     throw AppError.conflict('Shelf already exists');
   }
 
-  const updatedData = await db
+  const [updatedData] = await db
     .update(shelves)
     .set({
       ...data,
       isActive: true,
       updatedAt: new Date(),
-      updatedBy: createdBy,
+      updatedBy: userId,
     })
     .where(eq(shelves.code, existingShelf.code))
     .returning();
 
-  return updatedData[0].code;
+  return updatedData.code;
 };
 
 // ==================== UPDATE ====================
@@ -119,11 +119,11 @@ type UpdateShelfParams = {
     note?: string;
     level?: number;
   };
-  updatedBy: string;
+  userId: string;
 };
 
 const update = async (params: UpdateShelfParams) => {
-  const { code, data, updatedBy } = params;
+  const { code, data, userId } = params;
 
   const existingShelf = await db.query.shelves.findFirst({
     where: and(eq(shelves.code, code), eq(shelves.isActive, true)),
@@ -143,28 +143,28 @@ const update = async (params: UpdateShelfParams) => {
     }
   }
 
-  const updatedData = await db
+  const [updatedData] = await db
     .update(shelves)
     .set({
       ...data,
       updatedAt: new Date(),
-      updatedBy,
+      updatedBy: userId,
     })
     .where(eq(shelves.code, code))
     .returning();
 
-  return updatedData[0].code;
+  return updatedData.code;
 };
 
 // ==================== DELETE ====================
 
 type DeleteShelfParams = {
   code: string;
-  updatedBy: string;
+  userId: string;
 };
 
 const remove = async (params: DeleteShelfParams) => {
-  const { code, updatedBy } = params;
+  const { code, userId } = params;
 
   const existingShelf = await db.query.shelves.findFirst({
     where: and(eq(shelves.code, code), eq(shelves.isActive, true)),
@@ -174,17 +174,25 @@ const remove = async (params: DeleteShelfParams) => {
     throw AppError.notFound('Shelf not found');
   }
 
-  const updatedData = await db
+  const existingItem = await db.query.shelfInventory.findFirst({
+    where: and(eq(shelfInventory.shelfCode, code), eq(shelfInventory.isActive, true)),
+  });
+
+  if (existingItem) {
+    throw AppError.conflict('Shelf is not empty');
+  }
+
+  const [updatedData] = await db
     .update(shelves)
     .set({
       isActive: false,
       updatedAt: new Date(),
-      updatedBy,
+      updatedBy: userId,
     })
     .where(eq(shelves.code, code))
     .returning();
 
-  return updatedData[0].code;
+  return updatedData.code;
 };
 
 // ==================== EXPORT ====================

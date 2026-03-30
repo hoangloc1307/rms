@@ -1,6 +1,6 @@
 import { and, count, eq, like, or } from 'drizzle-orm';
 import { db } from '~/database';
-import { warehouses, zones } from '~/database/schemas';
+import { racks, warehouses, zones } from '~/database/schemas';
 import { AppError } from '~/errors';
 import { ListZoneSchemaQuery } from '~/validations';
 
@@ -18,7 +18,12 @@ const getAll = async (query: ListZoneSchemaQuery) => {
   const dataPromise = db.query.zones.findMany({
     where: whereCondition,
     with: {
-      warehouse: true,
+      warehouse: {
+        columns: {
+          code: true,
+          name: true,
+        },
+      },
     },
     limit,
     offset: (page - 1) * limit,
@@ -26,9 +31,9 @@ const getAll = async (query: ListZoneSchemaQuery) => {
 
   const totalPromise = db.select({ total: count() }).from(zones).where(whereCondition);
 
-  const [data, totalData] = await Promise.all([dataPromise, totalPromise]);
+  const [data, [{ total }]] = await Promise.all([dataPromise, totalPromise]);
 
-  return { data, total: totalData[0].total };
+  return { data, total };
 };
 
 // ==================== GET DETAIL ====================
@@ -57,11 +62,12 @@ type CreateZoneParams = {
     name: string;
     note?: string;
   };
-  createdBy: string;
+  userId: string;
 };
 
 const create = async (params: CreateZoneParams) => {
-  const { data, createdBy } = params;
+  const { data, userId } = params;
+  const now = new Date();
 
   const [existingZone, parentWarehouse] = await Promise.all([
     db.query.zones.findFirst({
@@ -72,23 +78,38 @@ const create = async (params: CreateZoneParams) => {
     }),
   ]);
 
-  if (existingZone) {
-    throw AppError.conflict('Zone already exists');
-  }
-
   if (!parentWarehouse) {
     throw AppError.notFound('Warehouse not found');
   }
 
-  const insertedData = await db
-    .insert(zones)
-    .values({
+  if (!existingZone) {
+    const [insertedData] = await db
+      .insert(zones)
+      .values({
+        ...data,
+        createdBy: userId,
+      })
+      .returning();
+
+    return insertedData.code;
+  }
+
+  if (existingZone.isActive) {
+    throw AppError.conflict('Zone already exists');
+  }
+
+  const [updatedData] = await db
+    .update(zones)
+    .set({
       ...data,
-      createdBy,
+      isActive: true,
+      updatedAt: now,
+      updatedBy: userId,
     })
+    .where(eq(zones.code, existingZone.code))
     .returning();
 
-  return insertedData[0].code;
+  return updatedData.code;
 };
 
 // ==================== UPDATE ====================
@@ -99,13 +120,12 @@ type UpdateZoneParams = {
     warehouseCode?: string;
     name?: string;
     note?: string;
-    isActive?: boolean;
   };
-  updatedBy: string;
+  userId: string;
 };
 
 const update = async (params: UpdateZoneParams) => {
-  const { code, data, updatedBy } = params;
+  const { code, data, userId } = params;
 
   const existingZone = await db.query.zones.findFirst({
     where: and(eq(zones.code, code), eq(zones.isActive, true)),
@@ -125,28 +145,28 @@ const update = async (params: UpdateZoneParams) => {
     }
   }
 
-  const updatedData = await db
+  const [updatedData] = await db
     .update(zones)
     .set({
       ...data,
       updatedAt: new Date(),
-      updatedBy,
+      updatedBy: userId,
     })
     .where(eq(zones.code, code))
     .returning();
 
-  return updatedData[0].code;
+  return updatedData.code;
 };
 
 // ==================== DELETE ====================
 
 type DeleteZoneParams = {
   code: string;
-  updatedBy: string;
+  userId: string;
 };
 
 const remove = async (params: DeleteZoneParams) => {
-  const { code, updatedBy } = params;
+  const { code, userId } = params;
 
   const existingZone = await db.query.zones.findFirst({
     where: and(eq(zones.code, code), eq(zones.isActive, true)),
@@ -156,17 +176,25 @@ const remove = async (params: DeleteZoneParams) => {
     throw AppError.notFound('Zone not found');
   }
 
-  const updatedData = await db
+  const existingRack = await db.query.racks.findFirst({
+    where: and(eq(racks.zoneCode, code), eq(racks.isActive, true)),
+  });
+
+  if (existingRack) {
+    throw AppError.conflict('Zone has active racks');
+  }
+
+  const [updatedData] = await db
     .update(zones)
     .set({
       isActive: false,
       updatedAt: new Date(),
-      updatedBy,
+      updatedBy: userId,
     })
     .where(eq(zones.code, code))
     .returning();
 
-  return updatedData[0].code;
+  return updatedData.code;
 };
 
 // ==================== EXPORT ====================

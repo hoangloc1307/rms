@@ -15,13 +15,13 @@ import {
 const getAll = async (req: Request, res: Response) => {
   const { page, limit, search } = req.validatedData?.query as ListWarehouseSchemaQuery;
 
-  const result = await warehouseService.getAll({
+  const { data, total } = await warehouseService.getAll({
     page,
     limit,
     search,
   });
 
-  ApiResponse.paginated(res, result.data, page, limit, result.total);
+  ApiResponse.paginated(res, data, page, limit, total);
 };
 
 // ==================== GET DETAIL ====================
@@ -29,9 +29,9 @@ const getAll = async (req: Request, res: Response) => {
 const getDetail = async (req: Request, res: Response) => {
   const { code } = req.validatedData?.params as GetWarehouseDetailSchemaParams;
 
-  const result = await warehouseService.getDetail(code);
+  const { data } = await warehouseService.getDetail(code);
 
-  ApiResponse.ok(res, 'OK', result.data);
+  ApiResponse.ok(res, 'OK', data);
 };
 
 // ==================== CREATE ====================
@@ -45,7 +45,7 @@ const create = async (req: Request, res: Response) => {
       name,
       note,
     },
-    createdBy: req.user?.userId,
+    userId: req.user?.userId,
   });
 
   ApiResponse.created(res, 'OK', result);
@@ -63,7 +63,7 @@ const update = async (req: Request, res: Response) => {
       name,
       note,
     },
-    updatedBy: req.user?.userId,
+    userId: req.user?.userId,
   });
 
   ApiResponse.ok(res, 'OK', result);
@@ -76,7 +76,7 @@ const remove = async (req: Request, res: Response) => {
 
   await warehouseService.remove({
     code,
-    updatedBy: req.user?.userId,
+    userId: req.user?.userId,
   });
 
   ApiResponse.deleted(res);
