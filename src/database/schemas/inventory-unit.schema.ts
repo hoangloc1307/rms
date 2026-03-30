@@ -9,6 +9,7 @@ import { stockTransactions } from '~/database/schemas/stock-transaction.schema';
 
 export const inventoryUnits = pgTable('inventory_unit', {
   id: uuid('id').defaultRandom().primaryKey(),
+  labelId: char('label_id', { length: 14 }).notNull().unique(),
   tagCode: varchar('tag_code', { length: 255 }).notNull().unique(),
   itemCode: varchar('item_code', { length: 10 })
     .notNull()

@@ -1,6 +1,7 @@
 import { type Router } from 'express';
 import authRoutes from '~/routes/auth.route';
 import healthRoutes from '~/routes/health.route';
+import inventoryRoutes from '~/routes/inventory.route';
 import itemMasterRoutes from '~/routes/item.route';
 import rackRoutes from '~/routes/rack.route';
 import shelfRoutes from '~/routes/shelf.route';
@@ -23,4 +24,5 @@ export const routesConfig: RoutesConfig[] = [
   { path: '/zones', router: zoneRoutes },
   { path: '/racks', router: rackRoutes },
   { path: '/shelves', router: shelfRoutes },
+  { path: '/inventory', router: inventoryRoutes },
 ];

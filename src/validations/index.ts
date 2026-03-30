@@ -1,5 +1,6 @@
 export * from './auth.validation';
 export * from './env.validation';
+export * from './inventory.validation';
 export * from './item.validation';
 export * from './pagination.validation';
 export * from './rack.validation';

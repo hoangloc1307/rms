@@ -1,5 +1,6 @@
 export * from './auth.controller';
 export * from './health.controller';
+export * from './inventory.controller';
 export * from './item.controller';
 export * from './rack.controller';
 export * from './shelf.controller';
