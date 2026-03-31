@@ -2,7 +2,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Application } from 'express';
 import helmet from 'helmet';
-import { corsConfig, helmetConfig } from '~/configs';
+import { corsConfig, helmetConfig, setupSwagger } from '~/configs';
 import { authenticate, errorHandler, httpLogger } from '~/middlewares';
 import { notFoundHandler } from '~/middlewares/not-found-handler';
 import { routesConfig } from '~/routes';
@@ -24,6 +24,9 @@ const app: Application = express();
 
   // Log requests.
   app.use(httpLogger);
+
+  // Swagger
+  setupSwagger(app);
 
   // Routes
   routesConfig.forEach(({ path, router, isPublic }) => {

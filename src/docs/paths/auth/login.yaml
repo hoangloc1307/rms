@@ -1,0 +1,69 @@
+post:
+  tags:
+    - Auth
+  summary: Login
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          properties:
+            username:
+              type: string
+              example: 12314092
+            password:
+              type: string
+              example: 12345678
+  responses:
+    200:
+      description: Login success
+      content:
+        application/json:
+          schema:
+            properties:
+              success:
+                type: boolean
+                example: true
+              message:
+                type: string
+                example: Success
+              data:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjMxNDA5MiIsImlhdCI6MTc3NDk2Mzg4NywiZXhwIjoxNzc0OTY0Nzg3fQ.JlKfOXOhQOs8I1OFitFH5Hg-kGka92bvCakkwPUMyPU
+    400:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: Validation Error
+              meta:
+                type: object
+                example:
+                  body.password: 'Password must be at least 8 characters'
+              errorCode:
+                type: string
+                example: 'BAD_REQUEST'
+    401:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            properties:
+              success:
+                type: boolean
+                example: false
+              message:
+                type: string
+                example: Invalid username or password
+              errorCode:
+                type: string
+                example: 'UNAUTHORIZED'
