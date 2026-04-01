@@ -1,7 +1,7 @@
 post:
   tags:
     - Auth
-  summary: Login
+  summary: Register
   requestBody:
     required: true
     content:
@@ -11,19 +11,22 @@ post:
             username:
               type: string
               required: true
-            password:
+            name:
+              type: string
+              required: true
+            email:
               type: string
               required: true
         example:
           username: '12314092'
-          password: '12345678'
+          name: 'Trần Nguyễn Hoàng Lộc'
+          email: 'user.email@gmail.com'
   responses:
-    200:
-      description: Login success
+    201:
+      description: Register success
       content:
         application/json:
           schema:
-            type: object
             properties:
               success:
                 type: boolean
@@ -31,16 +34,12 @@ post:
                 type: string
               data:
                 type: object
-                properties:
-                  accessToken:
-                    type: string
           example:
             success: true
-            message: Success
-            data:
-              accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjMxNDA5MiIsImlhdCI6MTc3NDk2Mzg4NywiZXhwIjoxNzc0OTY0Nzg3fQ.JlKfOXOhQOs8I1OFitFH5Hg-kGka92bvCakkwPUMyPU
+            message: Register successfully!
+            data: null
     400:
-      description: Invalid request
+      description: Bad request
       content:
         application/json:
           schema:
@@ -57,10 +56,10 @@ post:
             success: false
             message: Validation Error
             meta:
-              body.password: 'Password must be at least 8 characters'
+              body.email: 'Email is required'
             errorCode: 'BAD_REQUEST'
-    401:
-      description: Unauthorized
+    409:
+      description: Conflict
       content:
         application/json:
           schema:
@@ -73,5 +72,5 @@ post:
                 type: string
           example:
             success: false
-            message: Invalid username or password
-            errorCode: 'UNAUTHORIZED'
+            message: 'Username already exists'
+            errorCode: 'CONFLICT'

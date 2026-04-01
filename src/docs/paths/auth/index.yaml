@@ -1,0 +1,14 @@
+/auth/register:
+  $ref: './register.yaml'
+/auth/login:
+  $ref: './login.yaml'
+/auth/refresh:
+  $ref: './refresh.yaml'
+/auth/logout:
+  $ref: './logout.yaml'
+/auth/forgot-password:
+  $ref: './forgot-password.yaml'
+/auth/reset-password:
+  $ref: './reset-password.yaml'
+/auth/google:
+  $ref: './google.yaml'

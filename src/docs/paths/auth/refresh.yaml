@@ -1,0 +1,43 @@
+post:
+  tags:
+    - Auth
+  summary: Refresh token
+  responses:
+    200:
+      description: Refresh token success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+          example:
+            success: true
+            message: 'Refresh successfully!'
+            data:
+              accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjMxNDA5MiIsImlhdCI6MTc3NDk2Mzg4NywiZXhwIjoxNzc0OTY0Nzg3fQ.JlKfOXOhQOs8I1OFitFH5Hg-kGka92bvCakkwPUMyPU'
+    401:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+              errorCode:
+                type: string
+          example:
+            success: false
+            message: 'Refresh token not found'
+            errorCode: 'UNAUTHORIZED'

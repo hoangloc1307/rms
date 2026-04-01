@@ -1,0 +1,37 @@
+post:
+  tags:
+    - Auth
+  summary: Login with Google
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            idToken:
+              type: string
+        example:
+          idToken: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjUzMDcyNGQ0OTE3M2EzZWQ2YjRhMDBhYTYzNDQyMDMwMGQ3MmFlNWIiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJhenAiOiI5MjExMjc1Mjc4NC1kOGxhNGhhbWY3NGF1NmhsbDc2czVnNWE3OWJpbTkybS5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsImF1ZCI6IjkyMTEyNzUyNzg0LWQ4bGE0aGFtZjc0YXU2aGxsNzZzNWc1YTc5YmltOTJtLmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTAyNDA5NjE0NjgxNjM5MzQwMzc0IiwiZW1haWwiOiJob2FuZ2xvYzEzMDdAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsIm5iZiI6MTc3MzEyMjQwMCwibmFtZSI6IlRy4bqnbiBOZ3V54buFbiBIb8OgbmcgTOG7mWMiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSTZjMFpvejhEVlh6QWk2Ykx2Qk5KR3lyUGthWkZKMk1PTkxyam5YUy1IblFaR1hyekY9czk2LWMiLCJnaXZlbl9uYW1lIjoiVHLhuqduIE5ndXnhu4VuIEhvw6BuZyBM4buZYyIsImlhdCI6MTc3MzEyMjcwMCwiZXhwIjoxNzczMTI2MzAwLCJqdGkiOiI5NDI3ZDNlOTMyZGM0NDVjZDNmZGI2ODc0YTNlOWRjODA1OWRlY2FlIn0.fKhC5zCzewYZlCDP8QJM8Q1Q6q6f64wY3tnzU4yllZJHFkfGk3uDoI24y-Zi0EzbLv3LFS2qb4qBR1h1eJcr50bc3MBzllarWII1KfRsYgPkumacpgLzze52vc8Fypd0Rs9VSomWT9e4MRflDk_FIFl7OaFlj5rSvRl3zvhgM22ZAjlcm0Nrx5Qe-0IVM4qRDTOrpEMRIuYna6dah4SBDFsD67gl68jyOXHMivuhmiP4wOin2PlrV0p7sPFqeRcyqnvuZF0GLHeP5WCHjlWfaPdCup9wOsl19EclX5zzCXnbQfm9ZNPTxEDoiHelp1JGKzFGo-E2GFFxqWanPDtcZA'
+  responses:
+    200:
+      description: Login successful
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+              data:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+          example:
+            success: true
+            message: 'Login successfully!'
+            data:
+              accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
