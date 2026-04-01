@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { authController } from '~/controllers';
-import { requestValidator } from '~/middlewares';
+import { authenticate, requestValidator } from '~/middlewares';
 import {
   forgotPasswordSchema,
   googleLoginSchema,
@@ -14,7 +14,7 @@ const router = Router();
 router.post('/register', requestValidator(registerSchema), authController.register);
 router.post('/login', requestValidator(loginSchema), authController.login);
 router.post('/refresh', authController.refresh);
-router.post('/logout', authController.logout);
+router.post('/logout', authenticate, authController.logout);
 router.post('/google', requestValidator(googleLoginSchema), authController.googleLogin);
 router.post('/forgot-password', requestValidator(forgotPasswordSchema), authController.forgotPassword);
 router.post('/reset-password', requestValidator(resetPasswordSchema), authController.resetPassword);

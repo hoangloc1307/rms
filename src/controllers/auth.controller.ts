@@ -33,7 +33,7 @@ const register = async (req: Request, res: Response) => {
     },
   });
 
-  ApiResponse.ok(res, 'Register successfully!');
+  ApiResponse.created(res, 'Register successfully!');
 };
 
 // ==================== LOGIN ====================
@@ -79,10 +79,10 @@ const refresh = async (req: Request, res: Response) => {
 // ==================== LOGOUT ====================
 
 const logout = (req: Request, res: Response) => {
-  const refreshToken = req.cookies[KEYS.REFRESH_TOKEN] as string;
+  const userId = req.user?.userId;
 
-  if (!refreshToken) {
-    throw AppError.unauthorized('Refresh token not found');
+  if (!userId) {
+    throw AppError.unauthorized('User not found');
   }
 
   res.clearCookie(KEYS.REFRESH_TOKEN, {
