@@ -9,7 +9,7 @@ export const envSchema = z.object({
     .int({ error: 'Must be an integer.' })
     .min(1, { error: 'Must be greater than 0.' })
     .max(65535, { error: 'Must be less than 65536.' }),
-  BASE_URL: z.url({ error: 'Must be a valid URL.' }).transform((url) => url.replace(/\/$/, '')),
+  BASE_URL: z.string({ error: 'Must be a string.' }),
   VERSION: z.string({ error: 'Must be a string.' }).regex(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/, {
     error: 'Must be valid semver (e.g. 1.0.0)',
   }),

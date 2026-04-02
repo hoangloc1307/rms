@@ -1,22 +1,23 @@
 import { CorsOptions } from 'cors';
 
-const allowedOrigins = [/^http:\/\/localhost(:\d+)?$/];
+// const allowedOrigins = [/^http:\/\/localhost(:\d+)?$/];
 
 export const corsConfig: CorsOptions = {
   // Cấu hình Access-Control-Allow-Origin CORS header
-  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-    if (!origin) return callback(null, true);
+  origin: true,
+  // (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+  //   if (!origin) return callback(null, true);
 
-    const isAllowed = allowedOrigins.some((allowed) =>
-      allowed instanceof RegExp ? allowed.test(origin) : allowed === origin,
-    );
+  //   const isAllowed = allowedOrigins.some((allowed) =>
+  //     allowed instanceof RegExp ? allowed.test(origin) : allowed === origin,
+  //   );
 
-    if (isAllowed) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  //   if (isAllowed) {
+  //     callback(null, true);
+  //   } else {
+  //     callback(new Error('Not allowed by CORS'));
+  //   }
+  // },
 
   // Cấu hình Access-Control-Allow-Methods CORS header
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
