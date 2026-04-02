@@ -42,9 +42,9 @@ const register = async (req: Request, res: Response) => {
 const login = async (req: Request, res: Response) => {
   const { username, password } = req.validatedData?.body as LoginSchemaBody;
 
-  const { accessToken, refreshToken } = await authService.login({ username, password });
+  const { user, token } = await authService.login({ username, password });
 
-  res.cookie(KEYS.REFRESH_TOKEN, refreshToken, {
+  res.cookie(KEYS.REFRESH_TOKEN, token.refreshToken, {
     httpOnly: true,
     secure: env.ENVIRONMENT === KEYS.PRODUCTION,
     sameSite: 'lax',
@@ -52,7 +52,7 @@ const login = async (req: Request, res: Response) => {
     path: '/api/auth/refresh',
   });
 
-  ApiResponse.ok(res, 'Login successfully!', { accessToken });
+  ApiResponse.ok(res, 'Login successfully!', { user, accessToken: token.accessToken });
 };
 
 // ==================== REFRESH TOKEN ====================

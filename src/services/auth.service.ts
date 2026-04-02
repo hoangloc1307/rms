@@ -74,7 +74,10 @@ const login = async ({ username, password }: LoginParams) => {
   const accessToken = generateAccessToken({ userId: user.username });
   const refreshToken = generateRefreshToken(user.username);
 
-  return { accessToken, refreshToken };
+  return {
+    user: { username: user.username, email: user.email, name: user.name },
+    token: { accessToken, refreshToken },
+  };
 };
 
 // ==================== REFRESH TOKEN ====================
