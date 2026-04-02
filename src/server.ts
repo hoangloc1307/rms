@@ -14,7 +14,7 @@ async function startServer() {
     await connectDatabase();
 
     // Server start
-    server.listen(env.PORT, () => {
+    server.listen(env.PORT, env.BASE_URL, () => {
       console.log(chalk.green(`✅ Server ${env.ENVIRONMENT} running at ${env.BASE_URL}:${env.PORT}`));
     });
 

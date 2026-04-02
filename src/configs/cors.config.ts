@@ -1,6 +1,6 @@
 import { CorsOptions } from 'cors';
 
-const allowedOrigins = [/^http:\/\/localhost:\d+$/];
+const allowedOrigins = [/^http:\/\/localhost(:\d+)?$/];
 
 export const corsConfig: CorsOptions = {
   // Cấu hình Access-Control-Allow-Origin CORS header
