@@ -7,6 +7,7 @@ import { addSendMailJob } from '~/helpers';
 import { authService } from '~/services';
 import { ApiResponse } from '~/utils';
 import {
+  ChangePasswordSchemaBody,
   ForgotPasswordSchemaBody,
   GoogleLoginSchemaBody,
   LoginSchemaBody,
@@ -137,6 +138,16 @@ const resetPassword = async (req: Request, res: Response) => {
   ApiResponse.ok(res, 'Password has been reset successfully.');
 };
 
+// ==================== CHANGE PASSWORD ====================
+
+const changePassword = async (req: Request, res: Response) => {
+  const { oldPassword, newPassword } = req.validatedData?.body as ChangePasswordSchemaBody;
+
+  await authService.changePassword({ userId: req.user?.userId, oldPassword, newPassword });
+
+  ApiResponse.ok(res, 'Password has been changed successfully.');
+};
+
 // ==================== EXPORT ====================
 
 export const authController = {
@@ -147,4 +158,5 @@ export const authController = {
   googleLogin,
   forgotPassword,
   resetPassword,
+  changePassword,
 };

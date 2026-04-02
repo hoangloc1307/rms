@@ -1,7 +1,7 @@
 {
-  "name": "rms",
+  "name": "wms",
   "version": "0.0.0",
-  "description": "Request Management System",
+  "description": "Warehouse Management System",
   "main": "index.js",
   "engines": {
     "node": "22.21.1"

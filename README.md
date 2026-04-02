@@ -1,4 +1,4 @@
-# RMS Dev With Docker
+# WMS Dev With Docker
 
 Project nay co the dev bang Docker trong khi van code tren may that qua bind mount.
 

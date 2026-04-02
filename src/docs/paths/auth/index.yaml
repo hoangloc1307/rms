@@ -12,3 +12,5 @@
   $ref: './reset-password.yaml'
 /auth/google:
   $ref: './google.yaml'
+/auth/change-password:
+  $ref: './change-password.yaml'

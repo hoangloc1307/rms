@@ -213,6 +213,33 @@ const resetPassword = async ({ token, newPassword }: ResetPasswordParams) => {
   await cacheService.del(`reset_pwd:${user.username}`);
 };
 
+// ==================== CHANGE PASSWORD ====================
+
+type ChangePasswordParams = { userId: string; oldPassword: string; newPassword: string };
+
+const changePassword = async ({ userId, oldPassword, newPassword }: ChangePasswordParams) => {
+  const user = await db.query.users.findFirst({
+    where: eq(users.username, userId),
+  });
+
+  if (!user || !user.isActive) {
+    throw AppError.notFound('User not found');
+  }
+
+  const isPasswordValid = await verifyPassword(oldPassword, user.password);
+
+  if (!isPasswordValid) {
+    throw AppError.badRequest('Invalid old password');
+  }
+
+  const hashedPassword = await hashPassword(newPassword);
+
+  await db
+    .update(users)
+    .set({ password: hashedPassword, updatedAt: new Date(), updatedBy: user.username })
+    .where(eq(users.username, user.username));
+};
+
 // ==================== EXPORT ====================
 
 export const authService = {
@@ -222,4 +249,5 @@ export const authService = {
   googleLogin,
   forgotPassword,
   resetPassword,
+  changePassword,
 };

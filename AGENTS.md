@@ -1,10 +1,10 @@
 # AGENTS.md
 
-Tài liệu này dành cho bất kỳ agent (hoặc contributor) nào làm việc trong repo `RMS`.
+Tài liệu này dành cho bất kỳ agent (hoặc contributor) nào làm việc trong repo `WMS`.
 
 ## 1) Project overview
 
-- Dự án: **Request Management System (RMS)**.
+- Dự án: **Warehouse Management System (WMS)**.
 - Backend Node.js + TypeScript theo kiến trúc Express, có worker nền cho queue jobs.
 
 ## 2) Stack và runtime chính
