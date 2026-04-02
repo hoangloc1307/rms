@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { boolean, char, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { menus } from '~/database/schemas/menus.schema';
 import { rolePermissions } from '~/database/schemas/role-permission.schema';
 import { userPermissions } from '~/database/schemas/user-permission.schema';
 
@@ -20,4 +21,5 @@ export const features = pgTable('features', {
 export const featureRelations = relations(features, ({ many }) => ({
   userPermissions: many(userPermissions),
   rolePermissions: many(rolePermissions),
+  menus: many(menus),
 }));

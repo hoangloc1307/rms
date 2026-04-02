@@ -4,6 +4,7 @@ export * from './import-job-rows';
 export * from './import-jobs';
 export * from './inventory-unit.schema';
 export * from './items.schema';
+export * from './menus.schema';
 export * from './racks.schema';
 export * from './role-permission.schema';
 export * from './roles.schema';
