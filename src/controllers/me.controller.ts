@@ -5,8 +5,8 @@ import { ApiResponse } from '~/utils';
 // ==================== GET ME ====================
 
 const getMe = async (req: Request, res: Response) => {
-  const user = await meService.getMe(req.user.userId);
-  ApiResponse.ok(res, 'OK', user);
+  const { user, menus } = await meService.getMe(req.user.userId);
+  ApiResponse.ok(res, 'OK', { user, menus });
 };
 
 // ==================== EXPORT ====================
