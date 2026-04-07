@@ -32,26 +32,13 @@ post:
               data:
                 type: object
                 properties:
-                  accessToken:
+                  token:
                     type: string
-                  user:
-                    type: object
-                    properties:
-                      username:
-                        type: string
-                      email:
-                        type: string
-                      name:
-                        type: string
           example:
             success: true
             message: Success
             data:
-              accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjMxNDA5MiIsImlhdCI6MTc3NDk2Mzg4NywiZXhwIjoxNzc0OTY0Nzg3fQ.JlKfOXOhQOs8I1OFitFH5Hg-kGka92bvCakkwPUMyPU
-              user:
-                username: '12314092'
-                email: 'hoangloc1307@gmail.com'
-                name: 'Trần Nguyễn Hoàng Lộc'
+              token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjMxNDA5MiIsImlhdCI6MTc3NDk2Mzg4NywiZXhwIjoxNzc0OTY0Nzg3fQ.JlKfOXOhQOs8I1OFitFH5Hg-kGka92bvCakkwPUMyPU
     400:
       description: Invalid request
       content:
