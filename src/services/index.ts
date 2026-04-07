@@ -4,6 +4,7 @@ export * from './health.service';
 export * from './inventory.service';
 export * from './item.service';
 export * from './mail.service';
+export * from './me.service';
 export * from './rack.service';
 export * from './shelf.service';
 export * from './upload.service';

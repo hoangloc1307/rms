@@ -3,6 +3,7 @@ import authRoutes from '~/routes/auth.route';
 import healthRoutes from '~/routes/health.route';
 import inventoryRoutes from '~/routes/inventory.route';
 import itemMasterRoutes from '~/routes/item.route';
+import meRoutes from '~/routes/me.route';
 import rackRoutes from '~/routes/rack.route';
 import shelfRoutes from '~/routes/shelf.route';
 import uploadRoutes from '~/routes/upload.route';
@@ -16,13 +17,14 @@ interface RoutesConfig {
 }
 
 export const routesConfig: RoutesConfig[] = [
-  { path: '/health', router: healthRoutes, isPublic: true },
   { path: '/auth', router: authRoutes, isPublic: true },
-  { path: '/upload', router: uploadRoutes },
+  { path: '/health', router: healthRoutes, isPublic: true },
+  { path: '/inventory', router: inventoryRoutes },
   { path: '/items', router: itemMasterRoutes },
-  { path: '/warehouses', router: warehouseRoutes },
-  { path: '/zones', router: zoneRoutes },
+  { path: '/me', router: meRoutes },
   { path: '/racks', router: rackRoutes },
   { path: '/shelves', router: shelfRoutes },
-  { path: '/inventory', router: inventoryRoutes },
+  { path: '/upload', router: uploadRoutes },
+  { path: '/warehouses', router: warehouseRoutes },
+  { path: '/zones', router: zoneRoutes },
 ];
