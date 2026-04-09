@@ -69,8 +69,12 @@ const getMe = async (userId: string) => {
   }
 
   const allowedFeatures = [];
+  const allowedPermissions = [];
   for (const [key, allowed] of sectionMap) {
-    if (allowed) allowedFeatures.push(key.split(':')[0]);
+    if (allowed) {
+      allowedFeatures.push(key.split(':')[0]);
+      allowedPermissions.push(key);
+    }
   }
 
   const userMenus = await db.query.menus.findMany({
@@ -80,7 +84,7 @@ const getMe = async (userId: string) => {
     },
   });
 
-  return { user, menus: userMenus.map((m) => m.path) };
+  return { user, menus: userMenus.map((m) => m.path), permissions: allowedPermissions };
 };
 
 // ==================== EXPORT ====================
