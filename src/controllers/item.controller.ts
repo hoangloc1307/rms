@@ -22,7 +22,7 @@ const getAll = async (req: Request, res: Response) => {
     search,
   });
 
-  ApiResponse.paginated(res, result.data, page, limit, result.total);
+  ApiResponse.paginated(res, result.data, result.total, page ?? 1, limit);
 };
 
 // ==================== GET DETAIL ====================

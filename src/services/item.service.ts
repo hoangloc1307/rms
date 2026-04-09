@@ -26,7 +26,7 @@ const getAll = async (query: PaginationSchemaQuery) => {
   const dataPromise = db.query.items.findMany({
     where: whereCondition,
     limit,
-    offset: (page - 1) * limit,
+    offset: page && limit ? (page - 1) * limit : undefined,
   });
 
   const totalPromise = db.select({ total: count() }).from(items).where(whereCondition);

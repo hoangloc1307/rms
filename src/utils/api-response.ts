@@ -3,7 +3,7 @@ import { HTTP_STATUS, HttpStatus } from '~/constants';
 
 interface Pagination {
   page: number;
-  limit: number;
+  limit?: number;
   totalItems: number;
   totalPages: number;
 }
@@ -75,8 +75,8 @@ export class ApiResponse<T = unknown> {
     return ApiResponse.Success(res, '', null, HTTP_STATUS.NO_CONTENT);
   }
 
-  static paginated<T>(res: Response, data: T, page: number, limit: number, totalItems: number, message = 'OK') {
-    const totalPages = Math.ceil(totalItems / limit);
+  static paginated<T>(res: Response, data: T, totalItems: number, page?: number, limit?: number, message = 'OK') {
+    const totalPages = Math.ceil(totalItems / (limit ?? 1));
 
     return new ApiResponse<T>({
       success: true,
@@ -84,10 +84,10 @@ export class ApiResponse<T = unknown> {
       data,
       httpStatus: HTTP_STATUS.OK,
       pagination: {
-        page,
+        page: page ?? 1,
         limit,
         totalItems,
-        totalPages,
+        totalPages: limit ? totalPages : 1,
       },
     }).send(res);
   }
