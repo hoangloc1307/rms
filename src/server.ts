@@ -1,17 +1,32 @@
 import chalk from 'chalk';
 import http from 'http';
+import { Server, Socket, SocketData } from 'socket.io';
 import app from '~/app';
-import { env } from '~/configs';
+import { env, socketConfig } from '~/configs';
 import { connectDatabase, disconnectDatabase } from '~/database';
 import { initJobs } from '~/jobs';
+import { authSocketMiddleware } from '~/middlewares/auth-socket.middleware';
 import { mailService } from '~/services';
 
 const server = http.createServer(app);
+const io = new Server(server, socketConfig);
 
 async function startServer() {
   try {
     // Connect db
     await connectDatabase();
+
+    io.use(authSocketMiddleware);
+
+    io.on('connection', (socket: Socket<never, never, never, SocketData>) => {
+      const userId = socket.data.userId;
+
+      void socket.join(`user_${userId}`);
+
+      socket.on('send_message', (data) => {
+        io.to(`user_${userId}`).emit('receive_message', data);
+      });
+    });
 
     // Server start
     server.listen(env.PORT, env.BASE_URL, () => {

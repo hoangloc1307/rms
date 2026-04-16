@@ -5,4 +5,5 @@ export * from './multer.config';
 export * from './nodemailer.config';
 export * from './redis.config';
 export * from './s3.config';
+export * from './socket.config';
 export * from './swagger.config';
