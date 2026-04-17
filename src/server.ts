@@ -7,6 +7,7 @@ import { connectDatabase, disconnectDatabase } from '~/database';
 import { initJobs } from '~/jobs';
 import { authSocketMiddleware } from '~/middlewares/auth-socket.middleware';
 import { mailService } from '~/services';
+import { registerSocketHandlers } from '~/socket';
 
 const server = http.createServer(app);
 const io = new Server(server, socketConfig);
@@ -21,11 +22,9 @@ async function startServer() {
     io.on('connection', (socket: Socket<never, never, never, SocketData>) => {
       const userId = socket.data.userId;
 
-      void socket.join(`user_${userId}`);
+      if (!userId) return;
 
-      socket.on('send_message', (data) => {
-        io.to(`user_${userId}`).emit('receive_message', data);
-      });
+      registerSocketHandlers(socket);
     });
 
     // Server start
