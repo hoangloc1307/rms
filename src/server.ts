@@ -8,6 +8,7 @@ import { initJobs } from '~/jobs';
 import { authSocketMiddleware } from '~/middlewares/auth-socket.middleware';
 import { mailService } from '~/services';
 import { registerSocketHandlers } from '~/socket';
+import { initQueueEvents } from '~/socket/queue-events';
 
 const server = http.createServer(app);
 const io = new Server(server, socketConfig);
@@ -18,6 +19,8 @@ async function startServer() {
     await connectDatabase();
 
     io.use(authSocketMiddleware);
+
+    initQueueEvents(io);
 
     io.on('connection', (socket: Socket<never, never, never, SocketData>) => {
       const userId = socket.data.userId;

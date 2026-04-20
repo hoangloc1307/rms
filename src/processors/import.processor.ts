@@ -41,7 +41,8 @@ const importItemMaster = async (jobRecord: typeof importJobs.$inferSelect) => {
       baseUnit: row.getCell(5).value,
       conversionFactor: row.getCell(6).value,
       deliveryOnBaseUnit: row.getCell(7).value,
-      note: row.getCell(8).value,
+      trackingType: row.getCell(8).value,
+      note: row.getCell(9).value,
     };
 
     rawData.push(rowData);
@@ -205,6 +206,12 @@ export const importProcessor = async (job: Job<JobDataMap['import']>) => {
       default:
         throw AppError.badRequest(`Unsupported import type: ${job.data.type}`);
     }
+
+    return {
+      token: job.data.token,
+      userId: jobRecord.createdBy,
+      type: 'import',
+    };
   } catch (error) {
     await db
       .update(importJobs)
