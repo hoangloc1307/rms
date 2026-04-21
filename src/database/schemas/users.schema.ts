@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { boolean, char, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { importJobs } from '~/database/schemas/import-jobs';
+import { notifications } from '~/database/schemas/notifications.schema';
 import { userPermissions } from '~/database/schemas/user-permission.schema';
 import { userRoles } from '~/database/schemas/user-role.schema';
 
@@ -24,4 +25,5 @@ export const userRelations = relations(users, ({ many }) => ({
   userRoles: many(userRoles),
   userPermissions: many(userPermissions),
   importJobs: many(importJobs),
+  notifications: many(notifications),
 }));

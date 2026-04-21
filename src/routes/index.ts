@@ -4,6 +4,7 @@ import healthRoutes from '~/routes/health.route';
 import inventoryRoutes from '~/routes/inventory.route';
 import itemMasterRoutes from '~/routes/item.route';
 import meRoutes from '~/routes/me.route';
+import notificationRoutes from '~/routes/notification.route';
 import rackRoutes from '~/routes/rack.route';
 import shelfRoutes from '~/routes/shelf.route';
 import uploadRoutes from '~/routes/upload.route';
@@ -22,6 +23,7 @@ export const routesConfig: RoutesConfig[] = [
   { path: '/inventory', router: inventoryRoutes },
   { path: '/items', router: itemMasterRoutes },
   { path: '/me', router: meRoutes },
+  { path: '/notifications', router: notificationRoutes },
   { path: '/racks', router: rackRoutes },
   { path: '/shelves', router: shelfRoutes },
   { path: '/upload', router: uploadRoutes },
