@@ -1,4 +1,4 @@
-import { and, desc, eq, lt, SQL } from 'drizzle-orm';
+import { and, count, desc, eq, lt, SQL } from 'drizzle-orm';
 import { db } from '~/database';
 import { notifications } from '~/database/schemas';
 import { NotificationEntity, NotificationType } from '~/database/schemas/enums';
@@ -43,8 +43,20 @@ const getAll = async (params: GetAllNotificationParams) => {
   return result;
 };
 
+// ==================== GET UNREAD COUNT ====================
+
+const getUnreadCount = async (userId: string) => {
+  const [{ count: totalUnread }] = await db
+    .select({ count: count() })
+    .from(notifications)
+    .where(and(eq(notifications.userId, userId), eq(notifications.isRead, false)));
+
+  return totalUnread;
+};
+
 // ==================== EXPORT ====================
 
 export const notificationService = {
   getAll,
+  getUnreadCount,
 };

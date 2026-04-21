@@ -21,8 +21,19 @@ const getAll = async (req: Request, res: Response) => {
   ApiResponse.ok(res, 'OK', data);
 };
 
+// ==================== GET UNREAD COUNT ====================
+
+const getUnreadCount = async (req: Request, res: Response) => {
+  const userId = req.user?.userId;
+
+  const count = await notificationService.getUnreadCount(userId);
+
+  ApiResponse.ok(res, 'OK', { count });
+};
+
 // ==================== EXPORT ====================
 
 export const notificationController = {
   getAll,
+  getUnreadCount,
 };
