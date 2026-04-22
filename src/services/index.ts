@@ -1,6 +1,7 @@
 export * from './auth.service';
 export * from './cache.service';
 export * from './health.service';
+export * from './import.service';
 export * from './inventory.service';
 export * from './item.service';
 export * from './mail.service';

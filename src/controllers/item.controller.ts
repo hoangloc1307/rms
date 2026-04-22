@@ -96,20 +96,6 @@ const updateItemMaster = async (req: Request, res: Response) => {
   ApiResponse.ok(res, 'OK', result);
 };
 
-// ==================== IMPORT ====================
-
-const importItemMaster = async (req: Request, res: Response) => {
-  const files = req.validatedData?.files;
-  const itemMasterFile = files!.itemMasterFile[0];
-
-  const result = await itemMasterService.importItemMaster({
-    file: itemMasterFile,
-    createdBy: req.user?.userId,
-  });
-
-  ApiResponse.ok(res, 'Imported successfully', result);
-};
-
 // ==================== COMMIT IMPORT ====================
 
 const commitItemMasterImport = async (req: Request, res: Response) => {
@@ -131,6 +117,5 @@ export const itemMasterController = {
   createItemMaster,
   deleteItemMaster,
   updateItemMaster,
-  importItemMaster,
   commitItemMasterImport,
 };

@@ -1,6 +1,7 @@
 import { type Router } from 'express';
 import authRoutes from '~/routes/auth.route';
 import healthRoutes from '~/routes/health.route';
+import importRoutes from '~/routes/import.route';
 import inventoryRoutes from '~/routes/inventory.route';
 import itemMasterRoutes from '~/routes/item.route';
 import meRoutes from '~/routes/me.route';
@@ -20,6 +21,7 @@ interface RoutesConfig {
 export const routesConfig: RoutesConfig[] = [
   { path: '/auth', router: authRoutes, isPublic: true },
   { path: '/health', router: healthRoutes, isPublic: true },
+  { path: '/import', router: importRoutes },
   { path: '/inventory', router: inventoryRoutes },
   { path: '/items', router: itemMasterRoutes },
   { path: '/me', router: meRoutes },

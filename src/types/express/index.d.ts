@@ -6,12 +6,10 @@ declare global {
         allowedSections?: string[];
       };
       validatedData?: {
-        body?: unknown;
+        body?: Record<string, unknown>;
         query?: unknown;
         params?: unknown;
-        files?: {
-          [key: string]: Express.Multer.File[];
-        };
+        files?: Record<string, Express.Multer.File[]>;
       };
     }
   }
