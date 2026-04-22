@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import { upload } from '~/configs';
 import { importController } from '~/controllers';
+import { requestValidator } from '~/middlewares';
 import { formValidator } from '~/middlewares/file-validator.middleware';
+import { getImportByCodeSchema } from '~/validations';
 
 const router = Router();
-
+router.get('/:code', requestValidator(getImportByCodeSchema), importController.getImportByCode);
 router.post(
   '/',
   upload('imports').single('importFile'),

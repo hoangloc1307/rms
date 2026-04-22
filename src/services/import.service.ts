@@ -1,7 +1,11 @@
 import { addMinutes, format } from 'date-fns';
+import { and, eq, lte } from 'drizzle-orm';
 import { db } from '~/database';
 import { importJobs } from '~/database/schemas';
+import { AppError } from '~/errors';
 import { addImportJob } from '~/helpers';
+
+// ==================== UPLOAD IMPORT ====================
 
 type ImportUploadParams = {
   file: Express.Multer.File;
@@ -43,6 +47,33 @@ const importUpload = async (params: ImportUploadParams) => {
   };
 };
 
+// ==================== GET IMPORT BY CODE ====================
+
+const getImportByCode = async (token: string) => {
+  const result = await db.query.importJobs.findFirst({
+    where: and(eq(importJobs.token, token), lte(importJobs.expiredAt, new Date())),
+    with: {
+      importJobRows: {
+        columns: {
+          jobId: false,
+        },
+      },
+    },
+    columns: {
+      fileUrl: false,
+    },
+  });
+
+  if (!result) {
+    throw AppError.notFound('Import not found or expired');
+  }
+
+  return result;
+};
+
+// ==================== EXPORT ====================
+
 export const importService = {
   importUpload,
+  getImportByCode,
 };
