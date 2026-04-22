@@ -54,9 +54,35 @@ const getUnreadCount = async (userId: string) => {
   return totalUnread;
 };
 
+// ==================== CREATE NOTIFICATION ====================
+
+type CreateNotificationParams = {
+  userId: string;
+  type: NotificationType;
+  entityType: NotificationEntity;
+  entityId: string;
+  title: string;
+  content: string;
+};
+
+const createNotification = async (params: CreateNotificationParams) => {
+  const { userId, type, entityType, entityId, title, content } = params;
+  const result = await db.insert(notifications).values({
+    userId,
+    type,
+    entityType,
+    entityId,
+    title,
+    content,
+    isRead: false,
+  });
+  return result;
+};
+
 // ==================== EXPORT ====================
 
 export const notificationService = {
   getAll,
   getUnreadCount,
+  createNotification,
 };

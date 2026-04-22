@@ -20,15 +20,17 @@ async function startServer() {
 
     io.use(authSocketMiddleware);
 
-    initQueueEvents(io);
-
     io.on('connection', (socket: Socket<never, never, never, SocketData>) => {
       const userId = socket.data.userId;
 
       if (!userId) return;
 
+      void socket.join(`user:${userId}`);
+
       registerSocketHandlers(socket);
     });
+
+    initQueueEvents(io);
 
     // Server start
     server.listen(env.PORT, env.BASE_URL, () => {

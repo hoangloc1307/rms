@@ -1,8 +1,9 @@
 import { QueueEvents } from 'bullmq';
 import { Server } from 'socket.io';
 import { redisConfig } from '~/configs';
+import { notificationService } from '~/services';
 
-export const initQueueEvents = (socket: Server) => {
+export const initQueueEvents = (io: Server) => {
   const queueEvents = new QueueEvents('jobs', {
     connection: redisConfig,
   });
@@ -17,7 +18,18 @@ export const initQueueEvents = (socket: Server) => {
     };
 
     if (data.type === 'import') {
-      socket.emit('import_validated', { token: data.token });
+      void (async () => {
+        await notificationService.createNotification({
+          userId: data.userId,
+          type: 'IMPORT',
+          entityType: 'IMPORT',
+          entityId: data.token,
+          title: 'New Import',
+          content: 'Your import file has been validated and is ready to be committed.',
+        });
+      })();
+
+      io.to(`user:${data.userId}`).emit('notification:new');
     }
   });
 
