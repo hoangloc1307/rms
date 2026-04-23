@@ -1,7 +1,7 @@
 import { addMinutes, format } from 'date-fns';
-import { and, eq, lte } from 'drizzle-orm';
+import { and, asc, eq, gte } from 'drizzle-orm';
 import { db } from '~/database';
-import { importJobs } from '~/database/schemas';
+import { importJobRows, importJobs } from '~/database/schemas';
 import { AppError } from '~/errors';
 import { addImportJob } from '~/helpers';
 
@@ -51,12 +51,15 @@ const importUpload = async (params: ImportUploadParams) => {
 
 const getImportByCode = async (token: string) => {
   const result = await db.query.importJobs.findFirst({
-    where: and(eq(importJobs.token, token), lte(importJobs.expiredAt, new Date())),
+    where: and(eq(importJobs.token, token), gte(importJobs.expiredAt, new Date()), eq(importJobs.status, 'VALIDATED')),
     with: {
       importJobRows: {
         columns: {
           jobId: false,
+          rawData: false,
+          rowKey: false,
         },
+        orderBy: asc(importJobRows.rowNumber),
       },
     },
     columns: {
