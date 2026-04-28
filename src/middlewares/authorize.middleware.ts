@@ -1,11 +1,11 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { NextFunction, Request, Response } from 'express';
 import { db } from '~/database';
 import { Action, features, rolePermissions, roles, userPermissions, userRoles } from '~/database/schemas';
 import { AppError } from '~/errors';
 
 export const authorize =
-  (featureCode: string, action: Action) => async (req: Request, res: Response, next: NextFunction) => {
+  (featureCode: string, allowActions: Action[]) => async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.user;
 
     // Tìm tất cả các permission của roles hoặc của userId đó có featureCode và action tương ứng
@@ -21,7 +21,7 @@ export const authorize =
           eq(userPermissions.username, userId),
           eq(features.isActive, true),
           eq(userPermissions.featureCode, featureCode),
-          eq(userPermissions.action, action),
+          inArray(userPermissions.action, allowActions),
         ),
       );
 
@@ -40,7 +40,7 @@ export const authorize =
           eq(roles.isActive, true),
           eq(features.isActive, true),
           eq(rolePermissions.featureCode, featureCode),
-          eq(rolePermissions.action, action),
+          inArray(rolePermissions.action, allowActions),
         ),
       );
 
