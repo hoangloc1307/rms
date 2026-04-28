@@ -34,15 +34,15 @@ const importItemMaster = async (jobRecord: typeof importJobs.$inferSelect) => {
     }
 
     const rowData = {
-      itemCode: row.getCell(1).value,
-      productCode: row.getCell(2).value,
-      name: row.getCell(3).value,
-      unit: row.getCell(4).value,
-      baseUnit: row.getCell(5).value,
-      conversionFactor: row.getCell(6).value,
-      deliveryOnBaseUnit: row.getCell(7).value,
-      trackingType: row.getCell(8).value,
-      note: row.getCell(9).value,
+      itemCode: row.getCell(1).value ?? '',
+      productCode: row.getCell(2).value ?? '',
+      name: row.getCell(3).value ?? '',
+      unit: row.getCell(4).value ?? '',
+      baseUnit: row.getCell(5).value ?? '',
+      conversionFactor: row.getCell(6).value ?? '',
+      deliveryOnBaseUnit: row.getCell(7).value ?? '',
+      trackingType: row.getCell(8).value ?? '',
+      note: row.getCell(9).value ?? '',
     };
 
     rawData.push(rowData);

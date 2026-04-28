@@ -3,7 +3,7 @@ import { upload } from '~/configs';
 import { importController } from '~/controllers';
 import { requestValidator } from '~/middlewares';
 import { formValidator } from '~/middlewares/file-validator.middleware';
-import { getImportByCodeSchema } from '~/validations';
+import { commitImportSchema, getImportByCodeSchema } from '~/validations';
 
 const router = Router();
 router.get('/:code', requestValidator(getImportByCodeSchema), importController.getImportByCode);
@@ -16,5 +16,6 @@ router.post(
   ]),
   importController.importUpload,
 );
+router.put('/:token/commit', requestValidator(commitImportSchema), importController.commitImport);
 
 export default router;

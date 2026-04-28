@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { importService } from '~/services';
 import { ApiResponse } from '~/utils';
-import { GetImportByCodeSchemaParams } from '~/validations';
+import { CommitImportSchemaParams, GetImportByCodeSchemaParams } from '~/validations';
 
 // ==================== UPLOAD IMPORT ====================
 
@@ -29,9 +29,25 @@ const getImportByCode = async (req: Request, res: Response) => {
   ApiResponse.ok(res, 'OK', result);
 };
 
+// ==================== COMMIT IMPORT ====================
+
+const commitImport = async (req: Request, res: Response) => {
+  const { token } = req.validatedData?.params as CommitImportSchemaParams;
+  const type = req.validatedData?.body?.type as string;
+
+  await importService.commitImport({
+    token,
+    committedBy: req.user?.userId,
+    type,
+  });
+
+  ApiResponse.ok(res, 'Committed successfully');
+};
+
 // ==================== EXPORT ====================
 
 export const importController = {
   importUpload,
   getImportByCode,
+  commitImport,
 };

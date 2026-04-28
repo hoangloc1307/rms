@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { itemMasterService } from '~/services';
 import { ApiResponse } from '~/utils';
 import {
-  CommitItemMasterImportSchemaParams,
   CreateItemMasterSchemaBody,
   DeleteItemMasterSchemaParams,
   GetItemMasterDetailSchemaParams,
@@ -96,19 +95,6 @@ const updateItemMaster = async (req: Request, res: Response) => {
   ApiResponse.ok(res, 'OK', result);
 };
 
-// ==================== COMMIT IMPORT ====================
-
-const commitItemMasterImport = async (req: Request, res: Response) => {
-  const { token } = req.validatedData?.params as CommitItemMasterImportSchemaParams;
-
-  await itemMasterService.commitItemMasterImport({
-    token,
-    committedBy: req.user?.userId,
-  });
-
-  ApiResponse.ok(res, 'Committed successfully');
-};
-
 // ==================== EXPORT ====================
 
 export const itemMasterController = {
@@ -117,5 +103,4 @@ export const itemMasterController = {
   createItemMaster,
   deleteItemMaster,
   updateItemMaster,
-  commitItemMasterImport,
 };
