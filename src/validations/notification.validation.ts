@@ -1,6 +1,6 @@
-// ==================== GET RACK DETAIL ====================
-
 import z from 'zod';
+
+// ==================== GET ALL ====================
 
 export const getNotificationSchema = z.object({
   query: z.object({
@@ -13,3 +13,13 @@ export const getNotificationSchema = z.object({
 });
 
 export type GetNotificationSchemaQuery = z.infer<typeof getNotificationSchema>['query'];
+
+// ==================== MARK AS READ ====================
+
+export const markAsReadSchema = z.object({
+  params: z.object({
+    id: z.uuid(),
+  }),
+});
+
+export type MarkAsReadSchemaParams = z.infer<typeof markAsReadSchema>['params'];

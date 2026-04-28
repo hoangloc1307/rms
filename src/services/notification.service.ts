@@ -79,10 +79,18 @@ const createNotification = async (params: CreateNotificationParams) => {
   return result;
 };
 
+// ==================== MARK AS READ ====================
+
+const markAsRead = async (id: string) => {
+  const result = await db.update(notifications).set({ isRead: true }).where(eq(notifications.id, id));
+  return result;
+};
+
 // ==================== EXPORT ====================
 
 export const notificationService = {
   getAll,
   getUnreadCount,
   createNotification,
+  markAsRead,
 };

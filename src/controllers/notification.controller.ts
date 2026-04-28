@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { notificationService } from '~/services';
 import { ApiResponse } from '~/utils';
-import { GetNotificationSchemaQuery } from '~/validations';
+import { GetNotificationSchemaQuery, MarkAsReadSchemaParams } from '~/validations';
 
 // ==================== GET ALL ====================
 
@@ -31,9 +31,20 @@ const getUnreadCount = async (req: Request, res: Response) => {
   ApiResponse.ok(res, 'OK', { count });
 };
 
+// ==================== MARK AS READ ====================
+
+const markAsRead = async (req: Request, res: Response) => {
+  const { id } = req.validatedData?.params as MarkAsReadSchemaParams;
+
+  await notificationService.markAsRead(id);
+
+  ApiResponse.ok(res, 'OK');
+};
+
 // ==================== EXPORT ====================
 
 export const notificationController = {
   getAll,
   getUnreadCount,
+  markAsRead,
 };
