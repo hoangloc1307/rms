@@ -1,0 +1,1 @@
+ALTER TABLE "import_jobs" ADD COLUMN "cancelled_at" timestamp (0) with time zone;

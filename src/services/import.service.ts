@@ -145,13 +145,13 @@ const updateItemMasterRows = async (
 
 // ==================== COMMIT IMPORT ====================
 
-type CommitItemMasterImportParams = {
+type CommitImportParams = {
   token: string;
   committedBy: string;
   type: string;
 };
 
-const commitImport = async (params: CommitItemMasterImportParams) => {
+const commitImport = async (params: CommitImportParams) => {
   const { token, committedBy, type } = params;
   const time = new Date();
 
@@ -203,11 +203,56 @@ const commitImport = async (params: CommitItemMasterImportParams) => {
       }
     }
 
+    await tx.delete(importJobRows).where(eq(importJobRows.jobId, importJob.id));
+
     await tx
       .update(importJobs)
       .set({
         status: 'COMMITTED',
         committedAt: time,
+      })
+      .where(eq(importJobs.id, importJob.id));
+  });
+
+  return true;
+};
+
+// ==================== CANCEL IMPORT ====================
+
+type CancelImportParams = {
+  token: string;
+  canceledBy: string;
+  type: string;
+};
+
+const cancelImport = async (params: CancelImportParams) => {
+  const { token, type } = params;
+  const time = new Date();
+
+  const importJob = await db.query.importJobs.findFirst({
+    where: and(eq(importJobs.token, token), eq(importJobs.type, type)),
+  });
+
+  if (!importJob) {
+    throw AppError.notFound('Import job not found');
+  }
+
+  if (importJob.status === 'COMMITTED') {
+    throw AppError.conflict('Import job already committed');
+  }
+
+  if (importJob.status === 'CANCELLED' || importJob.status === 'EXPIRED' || importJob.expiredAt <= new Date()) {
+    throw AppError.conflict('Import job already cancelled or expired');
+  }
+
+  await db.transaction(async (tx) => {
+    await tx.delete(importJobRows).where(eq(importJobRows.jobId, importJob.id));
+
+    await tx
+      .update(importJobs)
+      .set({
+        status: 'CANCELLED',
+        cancelledAt: time,
       })
       .where(eq(importJobs.id, importJob.id));
   });
@@ -221,4 +266,5 @@ export const importService = {
   importUpload,
   getImportByCode,
   commitImport,
+  cancelImport,
 };

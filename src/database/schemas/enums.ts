@@ -13,6 +13,7 @@ export const importStatusEnum = pgEnum('import_status', [
   'COMMITTED',
   'FAILED',
   'EXPIRED',
+  'CANCELLED',
 ]);
 export type ImportStatus = (typeof importStatusEnum.enumValues)[number];
 

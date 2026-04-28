@@ -18,6 +18,7 @@ export const importJobs = pgTable('import_jobs', {
   errorRows: integer('error_rows').notNull(),
   expiredAt: timestamp('expired_at', { withTimezone: true, precision: 0 }).notNull(),
   committedAt: timestamp('committed_at', { withTimezone: true, precision: 0 }),
+  cancelledAt: timestamp('cancelled_at', { withTimezone: true, precision: 0 }),
   createdAt: timestamp('created_at', { withTimezone: true, precision: 0 }).defaultNow().notNull(),
   createdBy: char('created_by', { length: 8 })
     .notNull()

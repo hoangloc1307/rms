@@ -120,6 +120,20 @@
       "when": 1776779138379,
       "tag": "0016_aberrant_iron_man",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1777360668542,
+      "tag": "0017_cynical_silvermane",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1777360844780,
+      "tag": "0018_graceful_patch",
+      "breakpoints": true
     }
   ]
 }

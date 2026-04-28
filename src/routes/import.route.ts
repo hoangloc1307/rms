@@ -17,5 +17,6 @@ router.post(
   importController.importUpload,
 );
 router.put('/:token/commit', requestValidator(commitImportSchema), importController.commitImport);
+router.put('/:token/cancel', requestValidator(commitImportSchema), importController.cancelImport);
 
 export default router;
