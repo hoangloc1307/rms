@@ -5,7 +5,7 @@ import {
   CreateWarehouseSchemaBody,
   DeleteWarehouseSchemaParams,
   GetWarehouseDetailSchemaParams,
-  ListWarehouseSchemaQuery,
+  PaginationSchemaQuery,
   UpdateWarehouseSchemaBody,
   UpdateWarehouseSchemaParams,
 } from '~/validations';
@@ -13,7 +13,7 @@ import {
 // ==================== GET ALL ====================
 
 const getAll = async (req: Request, res: Response) => {
-  const { page, limit, search } = req.validatedData?.query as ListWarehouseSchemaQuery;
+  const { page, limit, search } = req.validatedData?.query as PaginationSchemaQuery;
 
   const { data, total } = await warehouseService.getAll({
     page,
@@ -21,7 +21,7 @@ const getAll = async (req: Request, res: Response) => {
     search,
   });
 
-  ApiResponse.paginated(res, data, page, limit, total);
+  ApiResponse.paginated(res, data, total, page, limit);
 };
 
 // ==================== GET DETAIL ====================

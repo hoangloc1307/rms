@@ -12,18 +12,6 @@ export const getWarehouseDetailSchema = z.object({
 
 export type GetWarehouseDetailSchemaParams = z.infer<typeof getWarehouseDetailSchema>['params'];
 
-// ==================== LIST WAREHOUSES ====================
-
-export const listWarehouseSchema = z.object({
-  query: z.object({
-    page: z.coerce.number().min(1).default(1),
-    limit: z.coerce.number().min(1).max(100).default(10),
-    search: z.string().trim().optional(),
-  }),
-});
-
-export type ListWarehouseSchemaQuery = z.infer<typeof listWarehouseSchema>['query'];
-
 // ==================== CREATE WAREHOUSE ====================
 
 export const createWarehouseSchema = z.object({

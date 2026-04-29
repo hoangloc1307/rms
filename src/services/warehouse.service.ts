@@ -2,11 +2,11 @@ import { and, count, eq, like, or } from 'drizzle-orm';
 import { db } from '~/database';
 import { warehouses, zones } from '~/database/schemas';
 import { AppError } from '~/errors';
-import { ListWarehouseSchemaQuery } from '~/validations';
+import { PaginationSchemaQuery } from '~/validations';
 
 // ==================== GET ALL ====================
 
-const getAll = async (query: ListWarehouseSchemaQuery) => {
+const getAll = async (query: PaginationSchemaQuery) => {
   const { page, limit, search } = query;
 
   const whereCondition = and(
@@ -17,7 +17,7 @@ const getAll = async (query: ListWarehouseSchemaQuery) => {
   const dataPromise = db.query.warehouses.findMany({
     where: whereCondition,
     limit,
-    offset: (page - 1) * limit,
+    offset: page && limit ? (page - 1) * limit : undefined,
   });
 
   const totalPromise = db.select({ total: count() }).from(warehouses).where(whereCondition);
