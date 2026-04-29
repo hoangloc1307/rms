@@ -9,17 +9,17 @@ import { PaginationSchemaQuery } from '~/validations';
 const getAll = async (query: PaginationSchemaQuery) => {
   const { page, limit, search } = query;
 
-  const whereCondition = search
-    ? and(
-        eq(items.isActive, true),
-        or(
+  const whereCondition = and(
+    eq(items.isActive, true),
+    search
+      ? or(
           like(items.name, `%${search}%`),
           like(items.productCode, `%${search}%`),
           like(items.unit, `%${search}%`),
           like(items.baseUnit, `%${search}%`),
-        ),
-      )
-    : eq(items.isActive, true);
+        )
+      : undefined,
+  );
 
   const dataPromise = db.query.items.findMany({
     where: whereCondition,
@@ -29,9 +29,9 @@ const getAll = async (query: PaginationSchemaQuery) => {
 
   const totalPromise = db.select({ total: count() }).from(items).where(whereCondition);
 
-  const [data, totalData] = await Promise.all([dataPromise, totalPromise]);
+  const [data, [{ total }]] = await Promise.all([dataPromise, totalPromise]);
 
-  return { data, total: totalData[0].total };
+  return { data, total };
 };
 
 // ==================== GET DETAIL ====================

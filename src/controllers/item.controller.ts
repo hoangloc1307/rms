@@ -15,13 +15,13 @@ import {
 const getAll = async (req: Request, res: Response) => {
   const { page, limit, search } = req.validatedData?.query as PaginationSchemaQuery;
 
-  const result = await itemMasterService.getAll({
+  const { data, total } = await itemMasterService.getAll({
     page,
     limit,
     search,
   });
 
-  ApiResponse.paginated(res, result.data, result.total, page ?? 1, limit);
+  ApiResponse.paginated(res, data, total, page, limit);
 };
 
 // ==================== GET DETAIL ====================
