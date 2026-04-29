@@ -26,7 +26,7 @@ const getAll = async (query: ListZoneSchemaQuery) => {
       },
     },
     limit,
-    offset: (page - 1) * limit,
+    offset: page && limit ? (page - 1) * limit : undefined,
   });
 
   const totalPromise = db.select({ total: count() }).from(zones).where(whereCondition);

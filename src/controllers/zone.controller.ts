@@ -22,7 +22,7 @@ const getAll = async (req: Request, res: Response) => {
     warehouseCode,
   });
 
-  ApiResponse.paginated(res, data, page, limit, total);
+  ApiResponse.paginated(res, data, total, page, limit);
 };
 
 // ==================== GET DETAIL ====================

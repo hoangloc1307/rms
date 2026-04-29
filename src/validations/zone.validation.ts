@@ -1,4 +1,5 @@
 import z from 'zod';
+import { paginationQuerySchema } from '~/validations/pagination.validation';
 
 const zoneCodeSchema = z.string().trim().toUpperCase().min(1, 'Zone code is required').max(20);
 const warehouseCodeSchema = z.string().trim().toUpperCase().min(1, 'Warehouse code is required').max(20);
@@ -16,10 +17,7 @@ export type GetZoneDetailSchemaParams = z.infer<typeof getZoneDetailSchema>['par
 // ==================== LIST ZONES ====================
 
 export const listZoneSchema = z.object({
-  query: z.object({
-    page: z.coerce.number().min(1).default(1),
-    limit: z.coerce.number().min(1).max(100).default(10),
-    search: z.string().trim().optional(),
+  query: paginationQuerySchema.extend({
     warehouseCode: warehouseCodeSchema.optional(),
   }),
 });
