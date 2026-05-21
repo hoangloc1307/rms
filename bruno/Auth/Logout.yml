@@ -1,0 +1,17 @@
+info:
+  name: Logout
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: '{{BASE_URL}}/{{AUTH_ENDPOINT}}/logout'
+  auth:
+    type: bearer
+    token: '{{ACCESS_TOKEN}}'
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

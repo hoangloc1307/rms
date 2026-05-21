@@ -1,0 +1,30 @@
+info:
+  name: Login
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: '{{BASE_URL}}/{{AUTH_ENDPOINT}}/login'
+  body:
+    type: json
+    data: |-
+      {
+        "username": "11106140",
+        "password": "12345678"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const result = res.body;
+
+        bru.setEnvVar("ACCESS_TOKEN", result.data.token);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,0 +1,9 @@
+info:
+  name: Warehouses
+  type: folder
+  seq: 2
+
+request:
+  auth:
+    type: bearer
+    token: '{{ACCESS_TOKEN}}'

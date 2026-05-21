@@ -1,0 +1,24 @@
+name: WMS
+variables:
+  - name: BASE_URL
+    value: http://localhost:5000/api
+  - name: AUTH_ENDPOINT
+    value: auth
+  - name: INVENTORY_ENDPOINT
+    value: inventory
+  - name: ITEM_ENDPOINT
+    value: items
+  - name: WAREHOUSE_ENDPOINT
+    value: warehouses
+  - name: ZONE_ENDPOINT
+    value: zones
+  - name: RACK_ENDPOINT
+    value: racks
+  - name: SHELF_ENDPOINT
+    value: shelves
+  - name: NOTIFICATION_ENDPOINT
+    value: notifications
+  - name: ME_ENDPOINT
+    value: me
+  - secret: true
+    name: ACCESS_TOKEN

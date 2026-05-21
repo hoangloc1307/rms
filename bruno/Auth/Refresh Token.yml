@@ -1,0 +1,23 @@
+info:
+  name: Refresh Token
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: '{{BASE_URL}}/{{AUTH_ENDPOINT}}/refresh'
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        const result = res.body;
+
+        bru.setEnvVar("ACCESS_TOKEN", result.data.accessToken);
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
